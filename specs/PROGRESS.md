@@ -50,6 +50,15 @@ Checklists are updated as each feature is completed. After each feature, the AI 
 
 ---
 
+## Feature: Logout (05-logout.md)
+
+- [x] Spec written in `specs/features/`
+- [x] Backend implemented (N/A – frontend only)
+- [x] Frontend implemented (logout button in TitleBar, auth.logout(), ProtectedRoute redirect; all four scenarios satisfied)
+- [x] Linter/errors resolved
+
+---
+
 ## Feature: (example – replace with real features)
 
 - [ ] Spec written in `specs/features/`
