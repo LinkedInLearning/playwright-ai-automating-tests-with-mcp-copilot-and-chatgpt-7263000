@@ -14,7 +14,7 @@
   "editor.useTabStops": true,
   "emmet.triggerExpansionOnTab": true,
   "files.autoSave": "afterDelay",
-  "terminal.integrated.fontSize": 18,
+  "terminal.integrated.fontSize": 12, //18,
   "workbench.colorTheme": "LinkedIn Learning Dark",
   "workbench.fontAliasing": "antialiased",
   "workbench.statusBar.visible": true

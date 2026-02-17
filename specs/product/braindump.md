@@ -6,7 +6,6 @@ The app I need to create will be the system under test.
 I want to use proper context engineering with AI assistance in order to build this web app.
 I want to do it with excellence and with best practices.
 
-
 # Web app design
 
 I want to create a web app named "BuggyBoard" that will be a basic bug tracker.
@@ -19,7 +18,6 @@ It will have three main views:
 A user has full access to all the bugs created in the app.
 The theme for the app will be the classic air-cooled Volkswagen Beetle as a play on the word "Bug".
 
-
 # Web app tech stack
 
 - The web app should be a full-stack Node.js app.
@@ -31,7 +29,6 @@ The theme for the app will be the classic air-cooled Volkswagen Beetle as a play
 - The test framework will be Playwright, but do NOT add tests during development,
   since tests will need to be part of the course material.
 
-
 # Coding standards
 
 - Be simple and direct rather than complicated and clever.
@@ -39,7 +36,6 @@ The theme for the app will be the classic air-cooled Volkswagen Beetle as a play
 - Keep packages up to date.
 - Follow Domain Driven Design principles.
 - Keep business logic in the service layer and out of the frontend as much as possible.
-
 
 # Development process
 

@@ -1,9 +1,7 @@
 {
   "customizations": {
     "codespaces": {
-      "openFiles": [
-        "README.md"
-      ]
+      "openFiles": ["README.md"]
     },
     "vscode": {
       // Set *default* container specific settings.json values on container create.
@@ -11,9 +9,7 @@
         "terminal.integrated.shell.linux": "/bin/bash"
       },
       // Add the IDs of extensions you want installed when the container is created.
-      "extensions": [
-        "linkedinlearning.linkedinlearning-vscode-theme"
-      ]
+      "extensions": ["linkedinlearning.linkedinlearning-vscode-theme"]
     }
   },
   // Update welcome text and set terminal prompt to '$ '

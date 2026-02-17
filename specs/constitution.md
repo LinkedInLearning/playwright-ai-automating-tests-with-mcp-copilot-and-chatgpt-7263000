@@ -10,20 +10,20 @@ All product and engineering context **shall** live in Markdown under `specs/`. N
 
 **Structure:**
 
-| Path | Purpose |
-|------|--------|
-| **`specs/product/`** | Product vision, glossary, braindump, personas, roadmap, and other product-management artifacts. |
-| | `product/vision.md` – What BuggyBoard is, theme, main views, user model. |
-| | `product/glossary.md` – Domain terms (Bug, Board, User). |
-| | `product/braindump.md` – Raw intentions and decisions (source of "why"). |
-| **`specs/features/*.md`** | One spec per feature: user stories, Gherkin, acceptance criteria. |
-| **`specs/engineering/`** | Tech stack, coding standards, development process, folder structure, and other conventions. |
-| | `engineering/tech-stack.md` – Stack and constraints. |
-| | `engineering/coding-standards.md` – Style, DDD, service layer, errors/linting. |
-| | `engineering/development-process.md` – Spec-first, feature-by-feature, review pauses, progress tracking. |
-| **`specs/` (root)** | |
-| | `constitution.md` – This file: the supreme reference for how we work. |
-| | `PROGRESS.md` – The single checklist of what’s done per feature; updated after each feature. |
+| Path                      | Purpose                                                                                                  |
+| ------------------------- | -------------------------------------------------------------------------------------------------------- |
+| **`specs/product/`**      | Product vision, glossary, braindump, personas, roadmap, and other product-management artifacts.          |
+|                           | `product/vision.md` – What BuggyBoard is, theme, main views, user model.                                 |
+|                           | `product/glossary.md` – Domain terms (Bug, Board, User).                                                 |
+|                           | `product/braindump.md` – Raw intentions and decisions (source of "why").                                 |
+| **`specs/features/*.md`** | One spec per feature: user stories, Gherkin, acceptance criteria.                                        |
+| **`specs/engineering/`**  | Tech stack, coding standards, development process, folder structure, and other conventions.              |
+|                           | `engineering/tech-stack.md` – Stack and constraints.                                                     |
+|                           | `engineering/coding-standards.md` – Style, DDD, service layer, errors/linting.                           |
+|                           | `engineering/development-process.md` – Spec-first, feature-by-feature, review pauses, progress tracking. |
+| **`specs/` (root)**       |                                                                                                          |
+|                           | `constitution.md` – This file: the supreme reference for how we work.                                    |
+|                           | `PROGRESS.md` – The single checklist of what’s done per feature; updated after each feature.             |
 
 **Use in Cursor:** Reference **`@specs/`** for full context; **`@specs/features/01-login.md`** (or the relevant feature) for a given feature; **`@specs/constitution.md`** and **`@specs/engineering/development-process.md`** for how we work.
 

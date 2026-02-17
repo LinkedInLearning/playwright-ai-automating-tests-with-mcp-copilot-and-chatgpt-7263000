@@ -6,10 +6,10 @@ Checklists are updated as each feature is completed. After each feature, the AI 
 
 ## Project setup
 
-- [ ] Repo structure (frontend + backend)
-- [ ] Dependencies (Node, TypeScript, React, Tailwind, Express, SQLite)
-- [ ] Linting and formatting
-- [ ] Run scripts (dev, build, etc.)
+- [x] Repo structure (frontend + backend)
+- [x] Dependencies (Node, TypeScript, React, Tailwind, Express; SQLite when needed)
+- [x] Linting and formatting
+- [x] Run scripts (dev, build, etc.)
 
 ---
 
@@ -23,4 +23,4 @@ Checklists are updated as each feature is completed. After each feature, the AI 
 
 ---
 
-*(Add one section per feature; copy the checklist template above.)*
+_(Add one section per feature; copy the checklist template above.)_

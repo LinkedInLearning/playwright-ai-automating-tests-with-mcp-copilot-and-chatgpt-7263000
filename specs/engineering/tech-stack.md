@@ -4,13 +4,13 @@
 
 BuggyBoard is a **full-stack Node.js** application written in **TypeScript**.
 
-| Layer   | Choice    | Notes                    |
-|---------|-----------|--------------------------|
-| Frontend | React     | UI components            |
-| Styling  | Tailwind  | CSS framework            |
-| Backend  | Express   | API and server           |
-| Database | SQLite    | Persistence              |
-| Language | TypeScript| Entire codebase          |
+| Layer    | Choice     | Notes           |
+| -------- | ---------- | --------------- |
+| Frontend | React      | UI components   |
+| Styling  | Tailwind   | CSS framework   |
+| Backend  | Express    | API and server  |
+| Database | SQLite     | Persistence     |
+| Language | TypeScript | Entire codebase |
 
 ## Constraints
 
