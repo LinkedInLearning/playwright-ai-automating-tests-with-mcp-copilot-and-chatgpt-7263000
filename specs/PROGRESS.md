@@ -19,7 +19,6 @@ Checklists are updated as each feature is completed. After each feature, the AI 
 - [x] Backend implemented (N/A – frontend only)
 - [x] Frontend implemented
 - [x] Linter/errors resolved
-- [x] Review done
 
 ---
 
@@ -29,7 +28,16 @@ Checklists are updated as each feature is completed. After each feature, the AI 
 - [x] Backend implemented (users.json + users module; no auth yet)
 - [x] Frontend implemented (N/A – data only)
 - [x] Linter/errors resolved
-- [x] Review done
+
+---
+
+## Feature: Login (03-login.md)
+
+- [x] Spec written in `specs/features/`
+- [x] Backend implemented (authService, POST /api/login)
+- [x] Frontend implemented (router, auth, login page with password masking, board page)
+- [x] Specs: api-conventions.md (API path prefix)
+- [x] Linter/errors resolved
 
 ---
 
@@ -39,7 +47,6 @@ Checklists are updated as each feature is completed. After each feature, the AI 
 - [ ] Backend implemented
 - [ ] Frontend implemented
 - [ ] Linter/errors resolved
-- [ ] Review done
 
 ---
 

@@ -1,5 +1,6 @@
 import express from "express";
 import { db } from "./db.js";
+import { login } from "./authService.js";
 
 const app = express();
 const PORT = 3000;
@@ -28,6 +29,44 @@ app.get("/api/health", (_req, res) => {
     message: "BuggyBoard API is running",
     database,
   });
+});
+
+app.post("/api/login", (req, res) => {
+  const username = (req.body?.username as string) ?? "";
+  const password = (req.body?.password as string) ?? "";
+  const result = login(username, password);
+
+  if (result.success) {
+    res.status(200).json({ username: result.username });
+    return;
+  }
+
+  switch (result.code) {
+    case "BLANK_USERNAME":
+      res.status(400).json({
+        error: "blank_username",
+        message: "Username cannot be blank.",
+      });
+      return;
+    case "BLANK_PASSWORD":
+      res.status(400).json({
+        error: "blank_password",
+        message: "Password cannot be blank.",
+      });
+      return;
+    case "MISSING_CREDENTIALS":
+      res.status(400).json({
+        error: "missing_credentials",
+        message: "Please enter your username and password.",
+      });
+      return;
+    case "INVALID_CREDENTIALS":
+      res.status(401).json({
+        error: "invalid_credentials",
+        message: "Invalid username or password.",
+      });
+      return;
+  }
 });
 
 app.listen(PORT, () => {
