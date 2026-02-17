@@ -57,12 +57,19 @@ export function LoginPage() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-stone-100">
       <div className="w-full max-w-sm rounded-lg bg-white p-8 shadow-md">
-        <h1 className="text-2xl font-bold text-stone-800 text-center">
-          BuggyBoard
-        </h1>
-        <p className="text-primary text-center mt-1 mb-6 font-medium">
-          Log in
-        </p>
+        <div className="flex flex-col items-center mb-6">
+          <div className="rounded-lg overflow-hidden bg-stone-200 ring-1 ring-stone-300 mb-3">
+            <img
+              src="/logo_50x50.png"
+              alt=""
+              width={50}
+              height={50}
+              className="block"
+            />
+          </div>
+          <h1 className="text-2xl font-bold text-stone-800">BuggyBoard</h1>
+          <p className="text-primary mt-1 font-medium">Log in</p>
+        </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>

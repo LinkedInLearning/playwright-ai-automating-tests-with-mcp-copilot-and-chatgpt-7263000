@@ -8,6 +8,7 @@ So that I can manage bugs as myself.
 # Design
 
 - The BuggyBoard app has a typical login page at `/login`:
+  - It displays the BuggyBoard logo at the top of the login card, above the app title. The logo uses the same asset as the title bar (`frontend/public/logo_50x50.png`), is centered, and appears in a rounded box with a border that matches the username and password fields.
   - It has a username field.
   - It has a password field.
   - It has a login button.
