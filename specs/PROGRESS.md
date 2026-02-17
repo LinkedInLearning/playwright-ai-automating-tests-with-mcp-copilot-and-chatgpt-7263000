@@ -13,6 +13,16 @@ Checklists are updated as each feature is completed. After each feature, the AI 
 
 ---
 
+## Feature: Favicon (01-favicon.md)
+
+- [x] Spec written in `specs/features/`
+- [x] Backend implemented (N/A – frontend only)
+- [x] Frontend implemented
+- [x] Linter/errors resolved
+- [ ] Review done
+
+---
+
 ## Feature: (example – replace with real features)
 
 - [ ] Spec written in `specs/features/`
