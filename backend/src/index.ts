@@ -1,4 +1,5 @@
 import express from "express";
+import { db } from "./db.js";
 
 const app = express();
 const PORT = 3000;
@@ -16,7 +17,17 @@ app.use((_req, res, next) => {
 });
 
 app.get("/api/health", (_req, res) => {
-  res.json({ ok: true, message: "BuggyBoard API is running" });
+  let database: string = "connected";
+  try {
+    db.prepare("SELECT 1").get();
+  } catch {
+    database = "error";
+  }
+  res.json({
+    ok: true,
+    message: "BuggyBoard API is running",
+    database,
+  });
 });
 
 app.listen(PORT, () => {

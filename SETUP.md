@@ -37,6 +37,8 @@ This starts:
 - **Frontend** (Vite) at [http://localhost:5173](http://localhost:5173) – open this in your browser to see the app.
 - **Backend** (Express) at [http://localhost:3000](http://localhost:3000) – API only.
 
+A single **SQLite** database file is used for the app. It is created automatically at `backend/data/buggyboard.db` the first time the backend runs. No migration step or separate dev/test/prod databases are used.
+
 To confirm the backend is up, you can open or curl:
 
 - [http://localhost:3000/api/health](http://localhost:3000/api/health) – should return `{"ok":true,"message":"BuggyBoard API is running"}`.

@@ -10,3 +10,6 @@ backend/dist
 
 # Vite
 .vite
+
+# SQLite database (single file, no env-specific DBs)
+backend/data
