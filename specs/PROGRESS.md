@@ -41,6 +41,15 @@ Checklists are updated as each feature is completed. After each feature, the AI 
 
 ---
 
+## Feature: Title bar (04-title-bar.md)
+
+- [x] Spec written in `specs/features/`
+- [x] Backend implemented (N/A – frontend only)
+- [x] Frontend implemented (TitleBar with logo, title, logout; BoardPage layout)
+- [x] Linter/errors resolved
+
+---
+
 ## Feature: (example – replace with real features)
 
 - [ ] Spec written in `specs/features/`
