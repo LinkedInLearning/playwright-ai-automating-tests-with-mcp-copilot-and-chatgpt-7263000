@@ -9,6 +9,7 @@ When working on the **BuggyBoard** web app (bug tracker SUT for the Playwright c
 
 1. **Read the constitution** (`specs/constitution.md`) and the specs under `specs/` before implementing. Use at least:
    - `specs/product/vision.md` – what we're building
+   - `specs/design/theme.md` – color theme and UI/UX design rules
    - `specs/engineering/tech-stack.md` – stack and constraints
    - `specs/engineering/coding-standards.md` – style and architecture
    - `specs/engineering/development-process.md` – spec-first, feature-by-feature, pause for review

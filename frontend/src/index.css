@@ -1,3 +1,8 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Design theme: specs/design/theme.md */
+:root {
+  --color-primary: #b8ae76; /* Volkswagen Savannah Beige */
+}

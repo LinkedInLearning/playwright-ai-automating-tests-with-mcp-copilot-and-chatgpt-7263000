@@ -17,7 +17,9 @@ All product and engineering context **shall** live in Markdown under `specs/`. N
 |                           | `product/glossary.md` – Domain terms (Bug, Board, User).                                                 |
 |                           | `product/braindump.md` – Raw intentions and decisions (source of "why").                                 |
 | **`specs/features/*.md`** | One spec per feature: user stories, Gherkin, acceptance criteria.                                        |
-| **`specs/engineering/`**  | Tech stack, coding standards, development process, folder structure, and other conventions.              |
+| **`specs/design/`**       | UI/UX design context: color theme, typography, spacing, and other visual or interaction rules.          |
+|                           | `design/theme.md` – Primary color (Savannah Beige), palette, and other theme tokens.                   |
+| **`specs/engineering/`**  | Tech stack, coding standards, development process, folder structure, and other conventions.          |
 |                           | `engineering/tech-stack.md` – Stack and constraints.                                                     |
 |                           | `engineering/coding-standards.md` – Style, DDD, service layer, errors/linting.                           |
 |                           | `engineering/development-process.md` – Spec-first, feature-by-feature, review pauses, progress tracking. |
@@ -33,7 +35,7 @@ All product and engineering context **shall** live in Markdown under `specs/`. N
 
 Cursor rules in `.cursor/rules/` (`.mdc` files with YAML frontmatter) **shall** give the AI persistent, project-specific instructions that match this constitution.
 
-**Required:** An always-apply rule that directs the AI to read and follow the specs under `specs/`—including `specs/product/vision.md`, `specs/engineering/tech-stack.md`, `specs/engineering/coding-standards.md`, and `specs/engineering/development-process.md`—and to use the relevant file in `specs/features/` for each feature. When something is unclear, the AI **shall** ask the user before implementing.
+**Required:** An always-apply rule that directs the AI to read and follow the specs under `specs/`—including `specs/product/vision.md`, `specs/design/theme.md`, `specs/engineering/tech-stack.md`, `specs/engineering/coding-standards.md`, and `specs/engineering/development-process.md`—and to use the relevant file in `specs/features/` for each feature. When something is unclear, the AI **shall** ask the user before implementing.
 
 **Optional:** File-specific rules (e.g. TypeScript, React, Express) may be added to lock in conventions; keep them short. If `specs/engineering/coding-standards.md` already covers a topic, the "read the specs" rule may suffice.
 

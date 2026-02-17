@@ -60,7 +60,9 @@ export function LoginPage() {
         <h1 className="text-2xl font-bold text-stone-800 text-center">
           BuggyBoard
         </h1>
-        <p className="text-stone-600 text-center mt-1 mb-6">Log in</p>
+        <p className="text-primary text-center mt-1 mb-6 font-medium">
+          Log in
+        </p>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
@@ -76,7 +78,7 @@ export function LoginPage() {
               autoComplete="username"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
-              className="w-full rounded border border-stone-300 px-3 py-2 text-stone-800 focus:border-stone-500 focus:outline-none focus:ring-1 focus:ring-stone-500"
+              className="w-full rounded border border-stone-300 px-3 py-2 text-stone-800 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
               disabled={loading}
             />
           </div>
@@ -94,7 +96,7 @@ export function LoginPage() {
               autoComplete="current-password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full rounded border border-stone-300 px-3 py-2 text-stone-800 focus:border-stone-500 focus:outline-none focus:ring-1 focus:ring-stone-500"
+              className="w-full rounded border border-stone-300 px-3 py-2 text-stone-800 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
               disabled={loading}
             />
           </div>
@@ -108,7 +110,7 @@ export function LoginPage() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full rounded bg-stone-800 py-2 px-4 font-medium text-white hover:bg-stone-700 focus:outline-none focus:ring-2 focus:ring-stone-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full rounded bg-primary py-2 px-4 font-medium text-stone-800 hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {loading ? "Logging in…" : "Login"}
           </button>
