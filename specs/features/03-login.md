@@ -41,7 +41,7 @@ Scenario: Valid BuggyBoard login
 
 Scenario Outline: Submit login on Enter
   Given the login page is displayed
-  And the user types the Enter key while on the <field> field
+  When the user types the Enter key while on the <field> field
   Then the login page triggers the same behavior as clicking on the login button
 
   Examples:

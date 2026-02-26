@@ -49,6 +49,7 @@ Scenario: Severity colors are visually distinct
 
 Scenario: Severity styling uses the design system tokens
   Given the application is loaded
+  When the board page is loaded (or any page that uses severity styling)
   Then severity colors are available as design tokens (e.g. CSS custom properties)
   And the board page severity styling uses those tokens so colors stay consistent
 

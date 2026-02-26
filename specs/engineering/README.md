@@ -6,5 +6,6 @@ This folder holds **technical context**: how we build and run the app, and what 
 - **coding-standards.md** – Style and architecture: simple and direct, resolve errors/lint, DDD, business logic in the service layer.
 - **development-process.md** – How we work: spec-first, one feature at a time, pause for review, progress in PROGRESS.md.
 - **api-conventions.md** – Backend API routes must use the `/api` path prefix.
+- **gherkin-standards.md** – How to write Gherkin scenarios in feature specs (BDD, Given/When/Then, one behavior per scenario, Cucumber syntax).
 
 You can add more engineering docs here (e.g. folder structure, deployment, security) as needed.
