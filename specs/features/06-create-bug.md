@@ -25,6 +25,8 @@ Each field is required and cannot be left blank.
 The modal should have "save" and "cancel" buttons at the bottom.
 The "save" button should save the bug to the database and close the modal.
 The "cancel" button should close the modal and *not* save the bug to the database.
+The modal has an **X** in the upper right corner; clicking it has the same effect as the cancel button (close without saving).
+Pressing the **Escape** key while the modal is open has the same effect as the cancel button (close without saving).
 
 
 # Out of Scope
@@ -71,6 +73,24 @@ Scenario: User can cancel creating a bug without saving
   And the create-bug modal is open
   And the user has entered some data in the modal fields
   When the user clicks the cancel button
+  Then the modal is closed
+  And no new bug is saved to the database
+
+Scenario: User can close the create-bug modal with the X button
+  Given the user is authenticated into the app
+  And the user is on the board page
+  And the create-bug modal is open
+  And the user has entered some data in the modal fields
+  When the user clicks the X button in the upper right corner of the modal
+  Then the modal is closed
+  And no new bug is saved to the database
+
+Scenario: User can close the create-bug modal with the Escape key
+  Given the user is authenticated into the app
+  And the user is on the board page
+  And the create-bug modal is open
+  And the user has entered some data in the modal fields
+  When the user presses the Escape key
   Then the modal is closed
   And no new bug is saved to the database
 

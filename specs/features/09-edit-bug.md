@@ -16,6 +16,8 @@ So that I can view all its data and update it for review and analysis.
 - The bottom of the modal has buttons for "save" and "cancel".
   - The "save" button should save any modifications to the bug to the database and close the modal.
   - The "cancel" button should close the modal and *not* save changes to the bug to the database.
+- The modal has an **X** in the upper right corner; clicking it has the same effect as the cancel button (close without saving).
+- Pressing the **Escape** key while the modal is open has the same effect as the cancel button (close without saving).
 - Clicking the dimmed area outside the modal (the backdrop) does **not** close the modal, so the user does not lose edits by accident.
 - The save button is disabled if there are no changes to the data.
 - The save button is disabled if any of the fields are changed to be blank.
@@ -74,6 +76,24 @@ Scenario: User can cancel without saving changes
   And the edit-bug modal is open for a bug
   And the user has made changes to the bug's fields
   When the user clicks the cancel button
+  Then the modal is closed
+  And the bug is not updated in the database
+  And the original bug data is unchanged
+
+Scenario: User can close the edit-bug modal with the X button
+  Given the user is authenticated into the app
+  And the edit-bug modal is open for a bug
+  And the user has made changes to the bug's fields
+  When the user clicks the X button in the upper right corner of the modal
+  Then the modal is closed
+  And the bug is not updated in the database
+  And the original bug data is unchanged
+
+Scenario: User can close the edit-bug modal with the Escape key
+  Given the user is authenticated into the app
+  And the edit-bug modal is open for a bug
+  And the user has made changes to the bug's fields
+  When the user presses the Escape key
   Then the modal is closed
   And the bug is not updated in the database
   And the original bug data is unchanged

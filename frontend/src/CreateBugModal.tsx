@@ -37,6 +37,18 @@ export function CreateBugModal({
     }
   }, [isOpen, defaultOwner]);
 
+  useEffect(() => {
+    if (!isOpen) return;
+    function handleEscape(e: KeyboardEvent) {
+      if (e.key === "Escape") {
+        e.preventDefault();
+        onClose();
+      }
+    }
+    window.addEventListener("keydown", handleEscape);
+    return () => window.removeEventListener("keydown", handleEscape);
+  }, [isOpen, onClose]);
+
   function validate(): string[] {
     const errors: string[] = [];
     if (!title.trim()) errors.push("Title is required.");
@@ -94,10 +106,19 @@ export function CreateBugModal({
       aria-labelledby="create-bug-modal-title"
     >
       <div className="bg-white rounded-lg shadow-lg w-full max-w-lg border border-stone-200">
-        <div className="px-6 py-4 border-b border-stone-200">
+        <div className="flex items-center justify-between gap-2 px-6 py-4 border-b border-stone-200">
           <h2 id="create-bug-modal-title" className="text-lg font-semibold text-stone-800">
             Create bug
           </h2>
+          <button
+            type="button"
+            onClick={handleCancel}
+            className="rounded p-1 text-stone-500 hover:bg-stone-100 hover:text-stone-700 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+            aria-label="Close"
+          >
+            <span className="sr-only">Close</span>
+            <span aria-hidden="true">×</span>
+          </button>
         </div>
         <form onSubmit={handleSubmit} className="px-6 py-4 space-y-4">
           <div>
