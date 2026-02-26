@@ -1,7 +1,7 @@
 import express from "express";
 import { db, initBugsTable } from "./db.js";
 import { login } from "./authService.js";
-import { createBug } from "./bugService.js";
+import { createBug, listBugs } from "./bugService.js";
 
 const app = express();
 const PORT = 3000;
@@ -70,6 +70,11 @@ app.post("/api/login", (req, res) => {
       });
       return;
   }
+});
+
+app.get("/api/bugs", (_req, res) => {
+  const bugs = listBugs();
+  res.json(bugs);
 });
 
 app.post("/api/bugs", (req, res) => {

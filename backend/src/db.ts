@@ -14,13 +14,13 @@ if (!existsSync(dataDir)) {
 const dbPath = join(dataDir, "buggyboard.db");
 export const db = new Database(dbPath);
 
-/** Ensure bugs table exists (id, title, severity, owner, description). */
+/** Ensure bugs table exists. Severity is stored as HIGH, MID, LOW. */
 export function initBugsTable(): void {
   db.exec(`
     CREATE TABLE IF NOT EXISTS bugs (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       title TEXT NOT NULL,
-      severity TEXT NOT NULL CHECK (severity IN ('high', 'mid', 'low')),
+      severity TEXT NOT NULL CHECK (severity IN ('HIGH', 'MID', 'LOW')),
       owner TEXT NOT NULL,
       description TEXT NOT NULL
     )

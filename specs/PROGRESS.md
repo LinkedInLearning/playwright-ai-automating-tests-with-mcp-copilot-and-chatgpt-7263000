@@ -68,4 +68,13 @@ Checklists are updated as each feature is completed. After each feature, the AI 
 
 ---
 
+## Feature: Bug board (07-bug-board.md)
+
+- [x] Spec written in `specs/features/`
+- [x] Backend implemented (listBugs, GET /api/bugs)
+- [x] Frontend implemented (BoardPage table: ID, Severity, Title, Owner; severity in caps; refresh on create)
+- [x] Linter/errors resolved
+
+---
+
 _(Add one section per feature; copy the checklist template above.)_
