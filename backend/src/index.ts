@@ -102,8 +102,9 @@ app.put("/api/bugs/:id", (req, res) => {
   const severity = typeof body.severity === "string" ? body.severity : "";
   const owner = typeof body.owner === "string" ? body.owner : "";
   const description = typeof body.description === "string" ? body.description : "";
+  const state = typeof body.state === "string" ? body.state : "";
 
-  const result = updateBug(id, { title, severity, owner, description });
+  const result = updateBug(id, { title, severity, owner, description, state });
 
   if (result.success) {
     res.status(200).json(result.bug);
@@ -128,6 +129,9 @@ app.put("/api/bugs/:id", (req, res) => {
       return;
     case "BLANK_DESCRIPTION":
       res.status(400).json({ error: "blank_description", message: "Description is required." });
+      return;
+    case "INVALID_STATE":
+      res.status(400).json({ error: "invalid_state", message: "State must be Open or Closed." });
       return;
   }
 });

@@ -122,4 +122,13 @@ Checklists are updated as each feature is completed. After each feature, the AI 
 
 ---
 
+## Feature: Bug status (13-bug-status.md)
+
+- [x] Spec written in `specs/features/`
+- [x] Backend implemented (state column OPEN/CLOSED; createBug sets OPEN; updateBug/getBug/listBugs include state; PUT accepts state)
+- [x] Frontend implemented (state filter toggle above board default Open; Edit modal State dropdown; search + sort apply with state filter; no-bugs-matched message)
+- [x] Linter/errors resolved
+
+---
+
 _(Add one section per feature; copy the checklist template above.)_

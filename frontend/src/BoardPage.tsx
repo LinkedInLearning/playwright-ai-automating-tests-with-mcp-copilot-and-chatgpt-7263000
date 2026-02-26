@@ -4,11 +4,14 @@ import { TitleBar } from "./TitleBar";
 import { CreateBugModal } from "./CreateBugModal";
 import { EditBugModal, type Bug } from "./EditBugModal";
 
+type BugStateFilter = "OPEN" | "CLOSED";
+
 interface BugRow {
   id: number;
   title: string;
   severity: string;
   owner: string;
+  state: string;
 }
 
 type SortColumn = "id" | "severity" | "title" | "owner";
@@ -82,10 +85,16 @@ export function BoardPage() {
   const [sortColumn, setSortColumn] = useState<SortColumn>("severity");
   const [sortDirection, setSortDirection] = useState<SortDirection>("desc");
   const [searchQuery, setSearchQuery] = useState("");
+  const [stateFilter, setStateFilter] = useState<BugStateFilter>("OPEN");
+
+  const bugsByState = useMemo(
+    () => bugs.filter((bug) => bug.state.toUpperCase() === stateFilter),
+    [bugs, stateFilter]
+  );
 
   const filteredBugs = useMemo(
-    () => bugs.filter((bug) => titleMatchesSearch(bug.title, searchQuery)),
-    [bugs, searchQuery]
+    () => bugsByState.filter((bug) => titleMatchesSearch(bug.title, searchQuery)),
+    [bugsByState, searchQuery]
   );
 
   const sortedBugs = useMemo(
@@ -118,7 +127,13 @@ export function BoardPage() {
     try {
       const res = await fetch("/api/bugs");
       if (res.ok) {
-        const data = (await res.json()) as Array<{ id: number; title: string; severity: string; owner: string }>;
+        const data = (await res.json()) as Array<{
+          id: number;
+          title: string;
+          severity: string;
+          owner: string;
+          state: string;
+        }>;
         setBugs(data);
       }
     } finally {
@@ -139,6 +154,36 @@ export function BoardPage() {
       />
       <main className="flex-1 p-4 md:p-6">
         <div className="max-w-4xl mx-auto">
+          <div className="flex justify-center mb-3">
+            <div
+              className="flex rounded-lg border border-stone-200 bg-white p-0.5 shadow-sm"
+              role="group"
+              aria-label="Filter by bug state"
+            >
+              <button
+                type="button"
+                onClick={() => setStateFilter("OPEN")}
+                className={`rounded-md px-4 py-2 text-sm font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-1 ${
+                  stateFilter === "OPEN"
+                    ? "bg-primary text-stone-800 shadow-sm ring-1 ring-stone-200/50"
+                    : "text-stone-500 hover:bg-stone-50 hover:text-stone-700"
+                }`}
+              >
+                Open
+              </button>
+              <button
+                type="button"
+                onClick={() => setStateFilter("CLOSED")}
+                className={`rounded-md px-4 py-2 text-sm font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-1 ${
+                  stateFilter === "CLOSED"
+                    ? "bg-primary text-stone-800 shadow-sm ring-1 ring-stone-200/50"
+                    : "text-stone-500 hover:bg-stone-50 hover:text-stone-700"
+                }`}
+              >
+                Closed
+              </button>
+            </div>
+          </div>
           <section className="bg-white rounded-lg border border-stone-200 shadow-sm overflow-hidden">
             <div className="overflow-x-auto">
               <table className="w-full text-left" aria-label="Bugs">
@@ -201,7 +246,7 @@ export function BoardPage() {
                         Loading…
                       </td>
                     </tr>
-                  ) : searchQuery.trim() !== "" && sortedBugs.length === 0 ? (
+                  ) : sortedBugs.length === 0 && bugs.length > 0 ? (
                     <tr>
                       <td colSpan={4} className="px-4 py-6 text-center text-stone-500">
                         No bugs matched.

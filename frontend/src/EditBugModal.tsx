@@ -2,12 +2,15 @@ import { useState, useEffect, FormEvent, useRef } from "react";
 
 export type Severity = "high" | "mid" | "low";
 
+export type BugState = "open" | "closed";
+
 export interface Bug {
   id: number;
   title: string;
   severity: string;
   owner: string;
   description: string;
+  state: string;
 }
 
 interface EditBugModalProps {
@@ -17,6 +20,14 @@ interface EditBugModalProps {
 }
 
 const SEVERITIES: Severity[] = ["high", "mid", "low"];
+const BUG_STATES: BugState[] = ["open", "closed"];
+
+function toLowerState(s: string): BugState {
+  const u = s.trim().toUpperCase();
+  if (u === "OPEN") return "open";
+  if (u === "CLOSED") return "closed";
+  return "open";
+}
 
 function severitySelectClass(severity: Severity): string {
   return `severity-select-${severity}`;
@@ -33,6 +44,7 @@ function toLowerSeverity(s: string): Severity {
 export function EditBugModal({ bug, onClose, onSaved }: EditBugModalProps) {
   const [title, setTitle] = useState("");
   const [severity, setSeverity] = useState<Severity>("mid");
+  const [state, setState] = useState<BugState>("open");
   const [owner, setOwner] = useState("");
   const [description, setDescription] = useState("");
   const [validationErrors, setValidationErrors] = useState<string[]>([]);
@@ -46,6 +58,7 @@ export function EditBugModal({ bug, onClose, onSaved }: EditBugModalProps) {
     if (bug) {
       setTitle(bug.title);
       setSeverity(toLowerSeverity(bug.severity));
+      setState(toLowerState(bug.state));
       setOwner(bug.owner);
       setDescription(bug.description);
       setValidationErrors([]);
@@ -68,15 +81,28 @@ export function EditBugModal({ bug, onClose, onSaved }: EditBugModalProps) {
   }, [isOpen, onClose]);
 
   const initial = bug
-    ? { title: bug.title, severity: toLowerSeverity(bug.severity), owner: bug.owner, description: bug.description }
+    ? {
+        title: bug.title,
+        severity: toLowerSeverity(bug.severity),
+        state: toLowerState(bug.state),
+        owner: bug.owner,
+        description: bug.description,
+      }
     : null;
 
-  const current = { title: title.trim(), severity, owner: owner.trim(), description: description.trim() };
+  const current = {
+    title: title.trim(),
+    severity,
+    state,
+    owner: owner.trim(),
+    description: description.trim(),
+  };
 
   const hasChanges =
     initial !== null &&
     (current.title !== initial.title ||
       current.severity !== initial.severity ||
+      current.state !== initial.state ||
       current.owner !== initial.owner ||
       current.description !== initial.description);
 
@@ -114,6 +140,7 @@ export function EditBugModal({ bug, onClose, onSaved }: EditBugModalProps) {
         body: JSON.stringify({
           title: title.trim(),
           severity: severity.toLowerCase(),
+          state: state.toLowerCase(),
           owner: owner.trim(),
           description: description.trim(),
         }),
@@ -223,6 +250,24 @@ export function EditBugModal({ bug, onClose, onSaved }: EditBugModalProps) {
               {SEVERITIES.map((s) => (
                 <option key={s} value={s}>
                   {s.toUpperCase()}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div>
+            <label htmlFor="edit-bug-state" className="block text-sm font-medium text-stone-700 mb-1">
+              State
+            </label>
+            <select
+              id="edit-bug-state"
+              value={state}
+              onChange={(e) => setState(e.target.value as BugState)}
+              className="w-full rounded border border-stone-300 px-3 py-2 text-stone-800 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+              disabled={loading}
+            >
+              {BUG_STATES.map((s) => (
+                <option key={s} value={s}>
+                  {s.charAt(0).toUpperCase() + s.slice(1)}
                 </option>
               ))}
             </select>
