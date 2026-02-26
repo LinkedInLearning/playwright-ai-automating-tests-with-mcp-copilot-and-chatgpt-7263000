@@ -105,6 +105,16 @@ export function updateBug(id: number, input: BugInput): UpdateBugResult {
 }
 
 /**
+ * Delete a bug by id. Returns NOT_FOUND if the bug does not exist.
+ */
+export function deleteBug(id: number): { success: true } | { success: false; code: "NOT_FOUND" } {
+  const existing = getBug(id);
+  if (!existing) return { success: false, code: "NOT_FOUND" };
+  db.prepare("DELETE FROM bugs WHERE id = ?").run(id);
+  return { success: true };
+}
+
+/**
  * Return all bugs from the database, in table order (e.g. by id).
  */
 export function listBugs(): Bug[] {

@@ -1,7 +1,7 @@
 import express from "express";
 import { db, initBugsTable } from "./db.js";
 import { login } from "./authService.js";
-import { createBug, getBug, listBugs, updateBug } from "./bugService.js";
+import { createBug, deleteBug, getBug, listBugs, updateBug } from "./bugService.js";
 
 const app = express();
 const PORT = 3000;
@@ -130,6 +130,20 @@ app.put("/api/bugs/:id", (req, res) => {
       res.status(400).json({ error: "blank_description", message: "Description is required." });
       return;
   }
+});
+
+app.delete("/api/bugs/:id", (req, res) => {
+  const id = parseInt(req.params.id, 10);
+  if (Number.isNaN(id)) {
+    res.status(400).json({ error: "invalid_id", message: "Bug ID must be a number." });
+    return;
+  }
+  const result = deleteBug(id);
+  if (result.success) {
+    res.status(204).send();
+    return;
+  }
+  res.status(404).json({ error: "not_found", message: "Bug not found." });
 });
 
 app.post("/api/bugs", (req, res) => {

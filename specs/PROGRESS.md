@@ -113,4 +113,13 @@ Checklists are updated as each feature is completed. After each feature, the AI 
 
 ---
 
+## Feature: Delete bug (12-delete-bug.md)
+
+- [x] Spec written in `specs/features/`
+- [x] Backend implemented (deleteBug, DELETE /api/bugs/:id)
+- [x] Frontend implemented (Delete button in Edit bug modal; removes bug, closes modal, board refreshes)
+- [x] Linter/errors resolved
+
+---
+
 _(Add one section per feature; copy the checklist template above.)_

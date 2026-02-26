@@ -37,6 +37,7 @@ export function EditBugModal({ bug, onClose, onSaved }: EditBugModalProps) {
   const [description, setDescription] = useState("");
   const [validationErrors, setValidationErrors] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
+  const [deleting, setDeleting] = useState(false);
   const titleInputRef = useRef<HTMLInputElement>(null);
 
   const isOpen = bug !== null;
@@ -49,6 +50,7 @@ export function EditBugModal({ bug, onClose, onSaved }: EditBugModalProps) {
       setDescription(bug.description);
       setValidationErrors([]);
       setLoading(false);
+      setDeleting(false);
       queueMicrotask(() => titleInputRef.current?.focus());
     }
   }, [bug]);
@@ -97,7 +99,7 @@ export function EditBugModal({ bug, onClose, onSaved }: EditBugModalProps) {
 
   async function handleSubmit(e: FormEvent) {
     e.preventDefault();
-    if (saveDisabled || !bug) return;
+    if (saveDisabled || deleting || !bug) return;
     const errors = validate();
     if (errors.length > 0) {
       setValidationErrors(errors);
@@ -132,6 +134,26 @@ export function EditBugModal({ bug, onClose, onSaved }: EditBugModalProps) {
 
   function handleCancel() {
     onClose();
+  }
+
+  async function handleDelete() {
+    if (!bug || deleting || loading) return;
+    setDeleting(true);
+    setValidationErrors([]);
+    try {
+      const res = await fetch(`/api/bugs/${bug.id}`, { method: "DELETE" });
+      if (res.ok) {
+        onSaved();
+        onClose();
+        return;
+      }
+      const data = (await res.json().catch(() => ({}))) as { message?: string };
+      setValidationErrors([data.message ?? "Failed to delete bug."]);
+    } catch {
+      setValidationErrors(["Something went wrong. Please try again."]);
+    } finally {
+      setDeleting(false);
+    }
   }
 
   if (!isOpen || !bug) return null;
@@ -240,22 +262,32 @@ export function EditBugModal({ bug, onClose, onSaved }: EditBugModalProps) {
               ))}
             </ul>
           )}
-          <div className="flex gap-3 justify-end pt-2">
+          <div className="flex gap-3 justify-between pt-2">
             <button
               type="button"
-              onClick={handleCancel}
-              className="rounded px-4 py-2 text-sm font-medium text-stone-700 bg-stone-200 hover:bg-stone-300 focus:outline-none focus:ring-2 focus:ring-stone-400 focus:ring-offset-2 disabled:opacity-50"
-              disabled={loading}
+              onClick={handleDelete}
+              className="rounded px-4 py-2 text-sm font-medium text-red-700 border border-red-200 bg-white hover:bg-red-50 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
+              disabled={loading || deleting}
             >
-              Cancel
+              {deleting ? "Deleting…" : "Delete"}
             </button>
-            <button
-              type="submit"
-              className="rounded px-4 py-2 text-sm font-medium text-stone-800 bg-primary hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
-              disabled={saveDisabled}
+            <div className="flex gap-3">
+              <button
+                type="button"
+                onClick={handleCancel}
+                className="rounded px-4 py-2 text-sm font-medium text-stone-700 bg-stone-200 hover:bg-stone-300 focus:outline-none focus:ring-2 focus:ring-stone-400 focus:ring-offset-2 disabled:opacity-50"
+                disabled={loading || deleting}
+              >
+                Cancel
+              </button>
+              <button
+                type="submit"
+                className="rounded px-4 py-2 text-sm font-medium text-stone-800 bg-primary hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
+              disabled={saveDisabled || deleting}
             >
               {loading ? "Saving…" : "Save"}
-            </button>
+              </button>
+            </div>
           </div>
         </form>
       </div>
