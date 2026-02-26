@@ -86,4 +86,13 @@ Checklists are updated as each feature is completed. After each feature, the AI 
 
 ---
 
+## Feature: Edit bug (09-edit-bug.md)
+
+- [x] Spec written in `specs/features/`
+- [x] Backend implemented (getBug, updateBug, GET /api/bugs/:id, PUT /api/bugs/:id)
+- [x] Frontend implemented (click row opens EditBugModal; ID read-only, Save/Cancel, Save disabled when no changes or blank; backdrop does not close)
+- [x] Linter/errors resolved
+
+---
+
 _(Add one section per feature; copy the checklist template above.)_

@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from "react";
 import { useAuth } from "./auth";
 import { TitleBar } from "./TitleBar";
 import { CreateBugModal } from "./CreateBugModal";
+import { EditBugModal, type Bug } from "./EditBugModal";
 
 interface BugRow {
   id: number;
@@ -22,8 +23,21 @@ function severityBadgeClass(severity: string): string {
 export function BoardPage() {
   const { user } = useAuth();
   const [createModalOpen, setCreateModalOpen] = useState(false);
+  const [editBug, setEditBug] = useState<Bug | null>(null);
   const [bugs, setBugs] = useState<BugRow[]>([]);
   const [loading, setLoading] = useState(true);
+
+  async function handleRowClick(bugId: number) {
+    try {
+      const res = await fetch(`/api/bugs/${bugId}`);
+      if (res.ok) {
+        const data = (await res.json()) as Bug;
+        setEditBug(data);
+      }
+    } catch {
+      // ignore
+    }
+  }
 
   const fetchBugs = useCallback(async () => {
     try {
@@ -68,7 +82,16 @@ export function BoardPage() {
                     bugs.map((bug) => (
                       <tr
                         key={bug.id}
-                        className="border-b border-stone-100 hover:bg-stone-50/80 transition-colors"
+                        role="button"
+                        tabIndex={0}
+                        onClick={() => handleRowClick(bug.id)}
+                        onKeyDown={(e) => {
+                          if (e.key === "Enter" || e.key === " ") {
+                            e.preventDefault();
+                            handleRowClick(bug.id);
+                          }
+                        }}
+                        className="border-b border-stone-100 hover:bg-stone-50/80 transition-colors cursor-pointer"
                       >
                         <td className="px-4 py-3 text-stone-500 font-mono text-sm">{bug.id}</td>
                         <td className="px-4 py-3">
@@ -95,6 +118,14 @@ export function BoardPage() {
         defaultOwner={user?.username ?? ""}
         onClose={() => setCreateModalOpen(false)}
         onSaved={fetchBugs}
+      />
+      <EditBugModal
+        bug={editBug}
+        onClose={() => setEditBug(null)}
+        onSaved={() => {
+          fetchBugs();
+          setEditBug(null);
+        }}
       />
     </div>
   );

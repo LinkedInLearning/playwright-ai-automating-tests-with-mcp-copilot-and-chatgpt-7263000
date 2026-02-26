@@ -1,7 +1,7 @@
 import express from "express";
 import { db, initBugsTable } from "./db.js";
 import { login } from "./authService.js";
-import { createBug, listBugs } from "./bugService.js";
+import { createBug, getBug, listBugs, updateBug } from "./bugService.js";
 
 const app = express();
 const PORT = 3000;
@@ -75,6 +75,61 @@ app.post("/api/login", (req, res) => {
 app.get("/api/bugs", (_req, res) => {
   const bugs = listBugs();
   res.json(bugs);
+});
+
+app.get("/api/bugs/:id", (req, res) => {
+  const id = parseInt(req.params.id, 10);
+  if (Number.isNaN(id)) {
+    res.status(400).json({ error: "invalid_id", message: "Bug ID must be a number." });
+    return;
+  }
+  const bug = getBug(id);
+  if (!bug) {
+    res.status(404).json({ error: "not_found", message: "Bug not found." });
+    return;
+  }
+  res.json(bug);
+});
+
+app.put("/api/bugs/:id", (req, res) => {
+  const id = parseInt(req.params.id, 10);
+  if (Number.isNaN(id)) {
+    res.status(400).json({ error: "invalid_id", message: "Bug ID must be a number." });
+    return;
+  }
+  const body = req.body ?? {};
+  const title = typeof body.title === "string" ? body.title : "";
+  const severity = typeof body.severity === "string" ? body.severity : "";
+  const owner = typeof body.owner === "string" ? body.owner : "";
+  const description = typeof body.description === "string" ? body.description : "";
+
+  const result = updateBug(id, { title, severity, owner, description });
+
+  if (result.success) {
+    res.status(200).json(result.bug);
+    return;
+  }
+
+  if (result.code === "NOT_FOUND") {
+    res.status(404).json({ error: "not_found", message: "Bug not found." });
+    return;
+  }
+
+  switch (result.code) {
+    case "BLANK_TITLE":
+      res.status(400).json({ error: "blank_title", message: "Title is required." });
+      return;
+    case "BLANK_SEVERITY":
+    case "INVALID_SEVERITY":
+      res.status(400).json({ error: "blank_severity", message: "Severity is required (high, mid, or low)." });
+      return;
+    case "BLANK_OWNER":
+      res.status(400).json({ error: "blank_owner", message: "Owner is required." });
+      return;
+    case "BLANK_DESCRIPTION":
+      res.status(400).json({ error: "blank_description", message: "Description is required." });
+      return;
+  }
 });
 
 app.post("/api/bugs", (req, res) => {
