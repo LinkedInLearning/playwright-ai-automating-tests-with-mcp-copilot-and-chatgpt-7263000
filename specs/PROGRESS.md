@@ -59,12 +59,12 @@ Checklists are updated as each feature is completed. After each feature, the AI 
 
 ---
 
-## Feature: (example – replace with real features)
+## Feature: Create bug (06-create-bug.md)
 
-- [ ] Spec written in `specs/features/`
-- [ ] Backend implemented
-- [ ] Frontend implemented
-- [ ] Linter/errors resolved
+- [x] Spec written in `specs/features/`
+- [x] Backend implemented (bugs table, bugService, POST /api/bugs)
+- [x] Frontend implemented (Create bug button, CreateBugModal with title/severity/owner/description, validation, save/cancel)
+- [x] Linter/errors resolved
 
 ---
 

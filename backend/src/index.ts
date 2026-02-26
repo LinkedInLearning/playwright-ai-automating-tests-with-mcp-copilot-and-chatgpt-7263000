@@ -1,9 +1,12 @@
 import express from "express";
-import { db } from "./db.js";
+import { db, initBugsTable } from "./db.js";
 import { login } from "./authService.js";
+import { createBug } from "./bugService.js";
 
 const app = express();
 const PORT = 3000;
+
+initBugsTable();
 
 app.use(express.json());
 
@@ -65,6 +68,37 @@ app.post("/api/login", (req, res) => {
         error: "invalid_credentials",
         message: "Invalid username or password.",
       });
+      return;
+  }
+});
+
+app.post("/api/bugs", (req, res) => {
+  const body = req.body ?? {};
+  const title = typeof body.title === "string" ? body.title : "";
+  const severity = typeof body.severity === "string" ? body.severity : "";
+  const owner = typeof body.owner === "string" ? body.owner : "";
+  const description = typeof body.description === "string" ? body.description : "";
+
+  const result = createBug({ title, severity: severity as "high" | "mid" | "low", owner, description });
+
+  if (result.success) {
+    res.status(201).json(result.bug);
+    return;
+  }
+
+  switch (result.code) {
+    case "BLANK_TITLE":
+      res.status(400).json({ error: "blank_title", message: "Title is required." });
+      return;
+    case "BLANK_SEVERITY":
+    case "INVALID_SEVERITY":
+      res.status(400).json({ error: "blank_severity", message: "Severity is required (high, mid, or low)." });
+      return;
+    case "BLANK_OWNER":
+      res.status(400).json({ error: "blank_owner", message: "Owner is required." });
+      return;
+    case "BLANK_DESCRIPTION":
+      res.status(400).json({ error: "blank_description", message: "Description is required." });
       return;
   }
 });

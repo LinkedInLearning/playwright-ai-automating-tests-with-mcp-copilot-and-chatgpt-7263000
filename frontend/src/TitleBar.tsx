@@ -1,7 +1,12 @@
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "./auth";
 
-export function TitleBar() {
+interface TitleBarProps {
+  /** When provided, a "New Bug" button is shown in the title bar that calls this when clicked. */
+  onNewBug?: () => void;
+}
+
+export function TitleBar({ onNewBug }: TitleBarProps) {
   const { logout } = useAuth();
   const navigate = useNavigate();
 
@@ -24,13 +29,24 @@ export function TitleBar() {
         </div>
         <h1 className="text-2xl font-bold text-stone-800 truncate">BuggyBoard</h1>
       </div>
-      <button
-        type="button"
-        onClick={handleLogout}
-        className="flex-shrink-0 rounded px-4 py-2 text-sm font-medium text-stone-700 bg-primary/20 hover:bg-primary/30 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
-      >
-        Logout
-      </button>
+      <div className="flex items-center gap-2 flex-shrink-0">
+        {onNewBug != null && (
+          <button
+            type="button"
+            onClick={onNewBug}
+            className="rounded px-4 py-2 text-sm font-medium text-stone-700 bg-primary/20 hover:bg-primary/30 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+          >
+            New Bug
+          </button>
+        )}
+        <button
+          type="button"
+          onClick={handleLogout}
+          className="rounded px-4 py-2 text-sm font-medium text-stone-700 bg-primary/20 hover:bg-primary/30 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+        >
+          Logout
+        </button>
+      </div>
     </header>
   );
 }

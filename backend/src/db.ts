@@ -13,3 +13,16 @@ if (!existsSync(dataDir)) {
 
 const dbPath = join(dataDir, "buggyboard.db");
 export const db = new Database(dbPath);
+
+/** Ensure bugs table exists (id, title, severity, owner, description). */
+export function initBugsTable(): void {
+  db.exec(`
+    CREATE TABLE IF NOT EXISTS bugs (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      title TEXT NOT NULL,
+      severity TEXT NOT NULL CHECK (severity IN ('high', 'mid', 'low')),
+      owner TEXT NOT NULL,
+      description TEXT NOT NULL
+    )
+  `);
+}
