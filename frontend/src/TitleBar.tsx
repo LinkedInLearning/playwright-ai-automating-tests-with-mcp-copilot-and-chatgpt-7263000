@@ -27,14 +27,14 @@ export function TitleBar({ onNewBug }: TitleBarProps) {
             className="block"
           />
         </div>
-        <h1 className="text-2xl font-bold text-stone-800 truncate">BuggyBoard</h1>
+        <h1 className="text-3xl font-bold text-stone-800 truncate">BuggyBoard</h1>
       </div>
       <div className="flex items-center gap-2 flex-shrink-0">
         {onNewBug != null && (
           <button
             type="button"
             onClick={onNewBug}
-            className="rounded px-4 py-2 text-sm font-medium text-stone-700 bg-primary/20 hover:bg-primary/30 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+            className="rounded px-4 py-2 text-base font-medium text-stone-700 bg-primary/20 hover:bg-primary/30 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
           >
             New Bug
           </button>
@@ -42,7 +42,7 @@ export function TitleBar({ onNewBug }: TitleBarProps) {
         <button
           type="button"
           onClick={handleLogout}
-          className="rounded px-4 py-2 text-sm font-medium text-stone-700 bg-primary/20 hover:bg-primary/30 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+          className="rounded px-4 py-2 text-base font-medium text-stone-700 bg-primary/20 hover:bg-primary/30 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
         >
           Logout
         </button>
