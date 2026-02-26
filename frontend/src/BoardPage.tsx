@@ -196,9 +196,9 @@ export function BoardPage() {
                         className="flex items-center gap-1 hover:text-stone-800 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-1 rounded"
                       >
                         ID
-                        {sortColumn === "id" && (
-                          <span aria-hidden="true">{sortDirection === "asc" ? "↑" : "↓"}</span>
-                        )}
+                        <span className="inline-block w-4 text-center" aria-hidden="true">
+                          {sortColumn === "id" ? (sortDirection === "asc" ? "↑" : "↓") : "\u00A0"}
+                        </span>
                       </button>
                     </th>
                     <th className="px-4 py-3 w-24" scope="col" aria-sort={sortColumn === "severity" ? (sortDirection === "asc" ? "ascending" : "descending") : undefined}>
@@ -208,9 +208,9 @@ export function BoardPage() {
                         className="flex items-center gap-1 hover:text-stone-800 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-1 rounded"
                       >
                         Severity
-                        {sortColumn === "severity" && (
-                          <span aria-hidden="true">{sortDirection === "asc" ? "↑" : "↓"}</span>
-                        )}
+                        <span className="inline-block w-4 text-center" aria-hidden="true">
+                          {sortColumn === "severity" ? (sortDirection === "asc" ? "↑" : "↓") : "\u00A0"}
+                        </span>
                       </button>
                     </th>
                     <th className="px-4 py-3" scope="col" aria-sort={sortColumn === "title" ? (sortDirection === "asc" ? "ascending" : "descending") : undefined}>
@@ -220,9 +220,9 @@ export function BoardPage() {
                         className="flex items-center gap-1 hover:text-stone-800 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-1 rounded"
                       >
                         Title
-                        {sortColumn === "title" && (
-                          <span aria-hidden="true">{sortDirection === "asc" ? "↑" : "↓"}</span>
-                        )}
+                        <span className="inline-block w-4 text-center" aria-hidden="true">
+                          {sortColumn === "title" ? (sortDirection === "asc" ? "↑" : "↓") : "\u00A0"}
+                        </span>
                       </button>
                     </th>
                     <th className="px-4 py-3 w-40" scope="col" aria-sort={sortColumn === "owner" ? (sortDirection === "asc" ? "ascending" : "descending") : undefined}>
@@ -232,9 +232,9 @@ export function BoardPage() {
                         className="flex items-center gap-1 hover:text-stone-800 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-1 rounded"
                       >
                         Owner
-                        {sortColumn === "owner" && (
-                          <span aria-hidden="true">{sortDirection === "asc" ? "↑" : "↓"}</span>
-                        )}
+                        <span className="inline-block w-4 text-center" aria-hidden="true">
+                          {sortColumn === "owner" ? (sortDirection === "asc" ? "↑" : "↓") : "\u00A0"}
+                        </span>
                       </button>
                     </th>
                   </tr>
