@@ -21,6 +21,7 @@ A bug needs the following information:
 When the user is logged into the BuggyBoard app,
 they should be able to create a new bug from the board page by clicking a **"New Bug"** button in the **title bar**.
 The app should then present a modal with fields for the user to input the bug data.
+The severity field is a dropdown (HIGH, MID, LOW); the **selected severity must be displayed with the same color coding as on the board** (HIGH = strong terracotta, MID = amber, LOW = muted sage), using the CSS custom properties in specs/features/08-board-severity.md.
 Each field is required and cannot be left blank.
 The modal should have "save" and "cancel" buttons at the bottom.
 The "save" button should save the bug to the database and close the modal.

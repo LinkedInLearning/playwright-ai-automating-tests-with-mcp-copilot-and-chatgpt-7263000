@@ -12,7 +12,7 @@ So that I can view all its data and update it for review and analysis.
 - The modal title is **"Edit bug #&lt;id&gt;"** with the bug's ID number interpolated (e.g. "Edit bug #1").
 - This modal shows the bug's ID as read-only.
 - All other fields are editable.
-- The severity field uses the same control as the create-bug modal (dropdown with HIGH, MID, LOW) and the same severity color coding when displayed (see specs/features/08-board-severity.md).
+- The severity field uses the same control as the create-bug modal (dropdown with HIGH, MID, LOW). The **selected severity in the dropdown must be displayed with the same color coding as on the board**: the dropdown’s text (and optionally a light background tint) must use the same severity colors (HIGH = strong terracotta, MID = amber, LOW = muted sage) via the CSS custom properties in specs/features/08-board-severity.md, so that the modal and board look consistent.
 - The bottom of the modal has buttons for "save" and "cancel".
   - The "save" button should save any modifications to the bug to the database and close the modal.
   - The "cancel" button should close the modal and *not* save changes to the bug to the database.
@@ -49,11 +49,11 @@ Scenario: Edit-bug modal shows ID as read-only and other fields as editable
   And the owner field is editable
   And the description field is editable
 
-Scenario: Severity in edit-bug modal uses same control and colors as create-bug
+Scenario: Severity in edit-bug modal uses same control and color coding as board
   Given the user is authenticated into the app
   And the edit-bug modal is open for a bug
   Then the severity field is a dropdown with options HIGH, MID, and LOW
-  And severity is displayed with the same color coding as on the board (see 08-board-severity.md)
+  And the selected severity in the dropdown is displayed with the same colors as on the board (HIGH = strong terracotta, MID = amber, LOW = muted sage)
 
 Scenario: Clicking outside the edit-bug modal does not close it
   Given the user is authenticated into the app

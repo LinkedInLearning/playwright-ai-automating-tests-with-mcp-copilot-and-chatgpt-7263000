@@ -31,3 +31,17 @@
   color: var(--color-severity-low);
   background-color: color-mix(in srgb, var(--color-severity-low) 22%, transparent);
 }
+
+/* Severity dropdown in modals: selected value uses same colors as board badges */
+.severity-select-high {
+  color: var(--color-severity-high);
+  background-color: color-mix(in srgb, var(--color-severity-high) 22%, transparent);
+}
+.severity-select-mid {
+  color: var(--color-severity-mid);
+  background-color: color-mix(in srgb, var(--color-severity-mid) 22%, transparent);
+}
+.severity-select-low {
+  color: var(--color-severity-low);
+  background-color: color-mix(in srgb, var(--color-severity-low) 22%, transparent);
+}

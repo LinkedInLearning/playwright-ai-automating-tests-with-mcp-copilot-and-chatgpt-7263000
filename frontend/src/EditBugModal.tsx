@@ -18,6 +18,10 @@ interface EditBugModalProps {
 
 const SEVERITIES: Severity[] = ["high", "mid", "low"];
 
+function severitySelectClass(severity: Severity): string {
+  return `severity-select-${severity}`;
+}
+
 function toLowerSeverity(s: string): Severity {
   const u = s.trim().toUpperCase();
   if (u === "HIGH") return "high";
@@ -191,7 +195,7 @@ export function EditBugModal({ bug, onClose, onSaved }: EditBugModalProps) {
               id="edit-bug-severity"
               value={severity}
               onChange={(e) => setSeverity(e.target.value as Severity)}
-              className="w-full rounded border border-stone-300 px-3 py-2 text-stone-800 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary bg-white"
+              className={`w-full rounded border border-stone-300 px-3 py-2 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary ${severitySelectClass(severity)}`}
               disabled={loading}
             >
               {SEVERITIES.map((s) => (
