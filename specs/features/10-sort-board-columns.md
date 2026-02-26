@@ -7,7 +7,7 @@ So that I can quickly organize and find bugs.
 
 # Design
 
-- The default sorting is descending for IDs.
+- The default sorting is by **Severity**, **descending** (HIGH, then MID, then LOW).
 - Each column may be sortable.
   - The current sort is denoted by an arrow icon next to the column title.
   - An arrow up means ascending order.
@@ -26,12 +26,12 @@ So that I can quickly organize and find bugs.
 
 # Acceptance Criteria
 
-Scenario: Board loads with default sort by ID descending
+Scenario: Board loads with default sort by Severity descending
   Given the user is authenticated into the app
   And there are bugs in the database
   When the user is on the board page
-  Then the bugs are displayed in descending order by ID (highest ID first)
-  And the ID column header shows the descending sort indicator (arrow down)
+  Then the bugs are displayed in descending order by severity (HIGH, then MID, then LOW)
+  And the Severity column header shows the descending sort indicator (arrow down)
   And no other column header shows a sort indicator
 
 Scenario: User can sort by a column by clicking its header

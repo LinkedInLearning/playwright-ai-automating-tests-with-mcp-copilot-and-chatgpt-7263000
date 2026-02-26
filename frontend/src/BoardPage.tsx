@@ -61,7 +61,7 @@ export function BoardPage() {
   const [editBug, setEditBug] = useState<Bug | null>(null);
   const [bugs, setBugs] = useState<BugRow[]>([]);
   const [loading, setLoading] = useState(true);
-  const [sortColumn, setSortColumn] = useState<SortColumn>("id");
+  const [sortColumn, setSortColumn] = useState<SortColumn>("severity");
   const [sortDirection, setSortDirection] = useState<SortDirection>("desc");
 
   const sortedBugs = useMemo(
