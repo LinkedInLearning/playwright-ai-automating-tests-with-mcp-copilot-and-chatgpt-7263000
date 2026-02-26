@@ -10,6 +10,15 @@ interface BugRow {
   owner: string;
 }
 
+/** Map API severity (HIGH/MID/LOW) to badge class suffix. */
+function severityBadgeClass(severity: string): string {
+  const s = severity.toUpperCase();
+  if (s === "HIGH") return "severity-badge-high";
+  if (s === "MID") return "severity-badge-mid";
+  if (s === "LOW") return "severity-badge-low";
+  return "severity-badge-mid";
+}
+
 export function BoardPage() {
   const { user } = useAuth();
   const [createModalOpen, setCreateModalOpen] = useState(false);
@@ -62,7 +71,14 @@ export function BoardPage() {
                         className="border-b border-stone-100 hover:bg-stone-50/80 transition-colors"
                       >
                         <td className="px-4 py-3 text-stone-500 font-mono text-sm">{bug.id}</td>
-                        <td className="px-4 py-3 text-stone-800">{bug.severity.toUpperCase()}</td>
+                        <td className="px-4 py-3">
+                          <span
+                            className={`severity-badge ${severityBadgeClass(bug.severity)}`}
+                            data-severity={bug.severity.toUpperCase()}
+                          >
+                            {bug.severity.toUpperCase()}
+                          </span>
+                        </td>
                         <td className="px-4 py-3 text-stone-800">{bug.title}</td>
                         <td className="px-4 py-3 text-stone-600">{bug.owner}</td>
                       </tr>

@@ -77,4 +77,13 @@ Checklists are updated as each feature is completed. After each feature, the AI 
 
 ---
 
+## Feature: Board severity color-coding (08-board-severity.md)
+
+- [x] Spec written in `specs/features/`
+- [x] Backend implemented (N/A – frontend only)
+- [x] Frontend implemented (CSS custom properties for severity colors; severity badges on board with text + tint)
+- [x] Linter/errors resolved
+
+---
+
 _(Add one section per feature; copy the checklist template above.)_
