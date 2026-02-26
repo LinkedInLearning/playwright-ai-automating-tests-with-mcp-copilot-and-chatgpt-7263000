@@ -32,6 +32,24 @@ function severityBadgeClass(severity: string): string {
   return "severity-badge-mid";
 }
 
+/**
+ * Normalize text for search matching: case insensitive, collapse whitespace, normalize punctuation.
+ * Used on both query and bug titles so "login" matches "Login fails" and "Issue with log-in".
+ */
+function normalizeForSearch(text: string): string {
+  const lower = text.toLowerCase().trim();
+  const noPunctuation = lower.replace(/\p{P}/gu, " ");
+  return noPunctuation.replace(/\s+/g, " ").trim();
+}
+
+/** Return true if normalized bug title contains the normalized query. */
+function titleMatchesSearch(title: string, query: string): boolean {
+  if (query === "") return true;
+  const nTitle = normalizeForSearch(title);
+  const nQuery = normalizeForSearch(query);
+  return nTitle.includes(nQuery);
+}
+
 function sortBugs(bugs: BugRow[], column: SortColumn, direction: SortDirection): BugRow[] {
   const sorted = [...bugs];
   sorted.sort((a, b) => {
@@ -63,10 +81,16 @@ export function BoardPage() {
   const [loading, setLoading] = useState(true);
   const [sortColumn, setSortColumn] = useState<SortColumn>("severity");
   const [sortDirection, setSortDirection] = useState<SortDirection>("desc");
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const filteredBugs = useMemo(
+    () => bugs.filter((bug) => titleMatchesSearch(bug.title, searchQuery)),
+    [bugs, searchQuery]
+  );
 
   const sortedBugs = useMemo(
-    () => sortBugs(bugs, sortColumn, sortDirection),
-    [bugs, sortColumn, sortDirection]
+    () => sortBugs(filteredBugs, sortColumn, sortDirection),
+    [filteredBugs, sortColumn, sortDirection]
   );
 
   function handleSortHeader(column: SortColumn) {
@@ -108,7 +132,11 @@ export function BoardPage() {
 
   return (
     <div className="min-h-screen flex flex-col bg-stone-100">
-      <TitleBar onNewBug={() => setCreateModalOpen(true)} />
+      <TitleBar
+        onNewBug={() => setCreateModalOpen(true)}
+        searchValue={searchQuery}
+        onSearchChange={setSearchQuery}
+      />
       <main className="flex-1 p-4 md:p-6">
         <div className="max-w-4xl mx-auto">
           <section className="bg-white rounded-lg border border-stone-200 shadow-sm overflow-hidden">
@@ -171,6 +199,18 @@ export function BoardPage() {
                     <tr>
                       <td colSpan={4} className="px-4 py-6 text-center text-stone-500">
                         Loading…
+                      </td>
+                    </tr>
+                  ) : searchQuery.trim() !== "" && sortedBugs.length === 0 ? (
+                    <tr>
+                      <td colSpan={4} className="px-4 py-6 text-center text-stone-500">
+                        No bugs matched.
+                      </td>
+                    </tr>
+                  ) : sortedBugs.length === 0 ? (
+                    <tr>
+                      <td colSpan={4} className="px-4 py-6 text-center text-stone-500">
+                        No bugs.
                       </td>
                     </tr>
                   ) : (

@@ -99,7 +99,16 @@ Checklists are updated as each feature is completed. After each feature, the AI 
 
 - [x] Spec written in `specs/features/`
 - [x] Backend implemented (N/A – client-side sort)
-- [x] Frontend implemented (default ID desc; clickable headers; arrow indicators; severity LOW→MID→HIGH / HIGH→MID→LOW)
+- [x] Frontend implemented (default Severity desc; clickable headers; arrow indicators; severity LOW→MID→HIGH / HIGH→MID→LOW)
+- [x] Linter/errors resolved
+
+---
+
+## Feature: Search board (11-search-board.md)
+
+- [x] Spec written in `specs/features/`
+- [x] Backend implemented (N/A – client-side filter)
+- [x] Frontend implemented (search in title bar left of New Bug; live filter by title; case insensitive, collapse whitespace, normalize punctuation; X clear; sort preserved; no-results message)
 - [x] Linter/errors resolved
 
 ---
