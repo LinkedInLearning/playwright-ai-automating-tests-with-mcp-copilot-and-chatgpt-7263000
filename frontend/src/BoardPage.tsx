@@ -154,7 +154,7 @@ export function BoardPage() {
       />
       <main className="flex-1 p-4 md:p-6">
         <div className="max-w-4xl mx-auto">
-          <div className="flex justify-center mb-3">
+          <div className="flex justify-center mb-5">
             <div
               className="flex rounded-lg border border-stone-200 bg-white p-0.5 shadow-sm"
               role="group"
