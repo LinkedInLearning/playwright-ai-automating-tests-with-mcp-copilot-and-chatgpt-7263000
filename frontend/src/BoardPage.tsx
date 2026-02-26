@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import { useAuth } from "./auth";
 import { TitleBar } from "./TitleBar";
 import { CreateBugModal } from "./CreateBugModal";
@@ -11,6 +11,18 @@ interface BugRow {
   owner: string;
 }
 
+type SortColumn = "id" | "severity" | "title" | "owner";
+type SortDirection = "asc" | "desc";
+
+/** Severity priority for sort: LOW=0, MID=1, HIGH=2 (ascending = LOW then MID then HIGH). */
+function severityOrder(s: string): number {
+  const u = s.toUpperCase();
+  if (u === "LOW") return 0;
+  if (u === "MID") return 1;
+  if (u === "HIGH") return 2;
+  return 1;
+}
+
 /** Map API severity (HIGH/MID/LOW) to badge class suffix. */
 function severityBadgeClass(severity: string): string {
   const s = severity.toUpperCase();
@@ -20,12 +32,51 @@ function severityBadgeClass(severity: string): string {
   return "severity-badge-mid";
 }
 
+function sortBugs(bugs: BugRow[], column: SortColumn, direction: SortDirection): BugRow[] {
+  const sorted = [...bugs];
+  sorted.sort((a, b) => {
+    let cmp = 0;
+    switch (column) {
+      case "id":
+        cmp = a.id - b.id;
+        break;
+      case "severity":
+        cmp = severityOrder(a.severity) - severityOrder(b.severity);
+        break;
+      case "title":
+        cmp = a.title.localeCompare(b.title);
+        break;
+      case "owner":
+        cmp = a.owner.localeCompare(b.owner);
+        break;
+    }
+    return direction === "asc" ? cmp : -cmp;
+  });
+  return sorted;
+}
+
 export function BoardPage() {
   const { user } = useAuth();
   const [createModalOpen, setCreateModalOpen] = useState(false);
   const [editBug, setEditBug] = useState<Bug | null>(null);
   const [bugs, setBugs] = useState<BugRow[]>([]);
   const [loading, setLoading] = useState(true);
+  const [sortColumn, setSortColumn] = useState<SortColumn>("id");
+  const [sortDirection, setSortDirection] = useState<SortDirection>("desc");
+
+  const sortedBugs = useMemo(
+    () => sortBugs(bugs, sortColumn, sortDirection),
+    [bugs, sortColumn, sortDirection]
+  );
+
+  function handleSortHeader(column: SortColumn) {
+    if (sortColumn === column) {
+      setSortDirection((d) => (d === "asc" ? "desc" : "asc"));
+    } else {
+      setSortColumn(column);
+      setSortDirection("asc");
+    }
+  }
 
   async function handleRowClick(bugId: number) {
     try {
@@ -65,10 +116,54 @@ export function BoardPage() {
               <table className="w-full text-left" aria-label="Bugs">
                 <thead>
                   <tr className="border-b border-stone-200 bg-stone-50/80 text-stone-600 text-sm font-medium uppercase tracking-wide">
-                    <th className="px-4 py-3 w-20" scope="col">ID</th>
-                    <th className="px-4 py-3 w-24" scope="col">Severity</th>
-                    <th className="px-4 py-3" scope="col">Title</th>
-                    <th className="px-4 py-3 w-40" scope="col">Owner</th>
+                    <th className="px-4 py-3 w-20" scope="col" aria-sort={sortColumn === "id" ? (sortDirection === "asc" ? "ascending" : "descending") : undefined}>
+                      <button
+                        type="button"
+                        onClick={() => handleSortHeader("id")}
+                        className="flex items-center gap-1 hover:text-stone-800 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-1 rounded"
+                      >
+                        ID
+                        {sortColumn === "id" && (
+                          <span aria-hidden="true">{sortDirection === "asc" ? "↑" : "↓"}</span>
+                        )}
+                      </button>
+                    </th>
+                    <th className="px-4 py-3 w-24" scope="col" aria-sort={sortColumn === "severity" ? (sortDirection === "asc" ? "ascending" : "descending") : undefined}>
+                      <button
+                        type="button"
+                        onClick={() => handleSortHeader("severity")}
+                        className="flex items-center gap-1 hover:text-stone-800 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-1 rounded"
+                      >
+                        Severity
+                        {sortColumn === "severity" && (
+                          <span aria-hidden="true">{sortDirection === "asc" ? "↑" : "↓"}</span>
+                        )}
+                      </button>
+                    </th>
+                    <th className="px-4 py-3" scope="col" aria-sort={sortColumn === "title" ? (sortDirection === "asc" ? "ascending" : "descending") : undefined}>
+                      <button
+                        type="button"
+                        onClick={() => handleSortHeader("title")}
+                        className="flex items-center gap-1 hover:text-stone-800 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-1 rounded"
+                      >
+                        Title
+                        {sortColumn === "title" && (
+                          <span aria-hidden="true">{sortDirection === "asc" ? "↑" : "↓"}</span>
+                        )}
+                      </button>
+                    </th>
+                    <th className="px-4 py-3 w-40" scope="col" aria-sort={sortColumn === "owner" ? (sortDirection === "asc" ? "ascending" : "descending") : undefined}>
+                      <button
+                        type="button"
+                        onClick={() => handleSortHeader("owner")}
+                        className="flex items-center gap-1 hover:text-stone-800 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-1 rounded"
+                      >
+                        Owner
+                        {sortColumn === "owner" && (
+                          <span aria-hidden="true">{sortDirection === "asc" ? "↑" : "↓"}</span>
+                        )}
+                      </button>
+                    </th>
                   </tr>
                 </thead>
                 <tbody>
@@ -79,7 +174,7 @@ export function BoardPage() {
                       </td>
                     </tr>
                   ) : (
-                    bugs.map((bug) => (
+                    sortedBugs.map((bug) => (
                       <tr
                         key={bug.id}
                         role="button"

@@ -95,4 +95,13 @@ Checklists are updated as each feature is completed. After each feature, the AI 
 
 ---
 
+## Feature: Sort board columns (10-sort-board-columns.md)
+
+- [x] Spec written in `specs/features/`
+- [x] Backend implemented (N/A – client-side sort)
+- [x] Frontend implemented (default ID desc; clickable headers; arrow indicators; severity LOW→MID→HIGH / HIGH→MID→LOW)
+- [x] Linter/errors resolved
+
+---
+
 _(Add one section per feature; copy the checklist template above.)_
