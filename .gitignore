@@ -13,3 +13,7 @@ backend/dist
 
 # SQLite database (single file, no env-specific DBs)
 backend/data
+
+# Playwright
+playwright-report/
+test-results/
