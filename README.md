@@ -1,7 +1,6 @@
-# Playwright and AI: Automating Tests with MCP, Copilot & ChatGPT Agents
+# Playwright with AI: Agents, Context, and Test Automation Patterns
 
-This is the repository for the LinkedIn Learning course `Playwright and AI: Automating Tests with MCP, Copilot & ChatGPT Agents
-`. The full course is available from [LinkedIn Learning][lil-course-url].
+This is the repository for the LinkedIn Learning course `Playwright with AI: Agents, Context, and Test Automation Patterns`. The full course is available from [LinkedIn Learning][lil-course-url].
 
 ![course-name-alt-text][lil-thumbnail-url]
 
