@@ -86,7 +86,7 @@ You will need an AI coding agent for this course for driving Playwright's tools,
 
 The recommended coding agent is **GitHub Copilot**. It works out of the box with GitHub Codespaces and with local VS Code. The course videos will use Copilot, and the context files are already configured to work with Copilot. Copilot's free tier will likely be sufficient for the needs of this course. If you exhaust your limits, you can either wait for them to refresh, or you can purchase a paid plan for higher limits.
 
-You can use other coding agents like **Claude Code** or **Cursor** if you choose to run the project locally. You will need to set them up on your own. Oftentimes you can use a free tier or a trial period, which should be sufficient for the scope of this course. However, the course videos will teach proper AI setup _only for Copilot_. They do **not** teach the different configurations required for Cursor or Claude.
+You could use other coding agents like **Claude Code** or **Cursor** if you choose to run the project locally, but this is _not recommended_ unless you are already very comfortable with your coding agent of choice. You will need to set them up on your own. Oftentimes you can use a free tier or a trial period, which should be sufficient for the scope of this course. However, the course videos will teach proper AI setup _only for Copilot_. They do **not** teach the different configurations required for Cursor or Claude. Trying to use coding agents other than Copilot could cause confusion and breakages.
 
 
 [0]: # "Replace these placeholder URLs with actual course URLs"
