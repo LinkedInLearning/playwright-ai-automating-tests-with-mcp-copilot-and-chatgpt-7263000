@@ -1,1 +1,1 @@
-{"root":["./src/app.tsx","./src/boardpage.tsx","./src/loginpage.tsx","./src/protectedroute.tsx","./src/auth.tsx","./src/main.tsx","./src/vite-env.d.ts"],"version":"5.6.3"}
+{"root":["./src/App.tsx","./src/BoardPage.tsx","./src/CreateBugModal.tsx","./src/EditBugModal.tsx","./src/LoginPage.tsx","./src/ProtectedRoute.tsx","./src/TitleBar.tsx","./src/auth.tsx","./src/main.tsx","./src/vite-env.d.ts"],"version":"5.6.3"}
