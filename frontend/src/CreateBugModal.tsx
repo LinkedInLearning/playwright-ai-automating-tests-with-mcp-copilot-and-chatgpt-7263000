@@ -104,11 +104,12 @@ export function CreateBugModal({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-stone-900/50"
+      className="fixed inset-0 z-50 overflow-y-auto bg-stone-900/50"
       role="dialog"
       aria-modal="true"
       aria-labelledby="create-bug-modal-title"
     >
+      <div className="flex min-h-full items-center justify-center p-4">
       <div className="bg-white rounded-lg shadow-lg w-full max-w-lg border border-stone-200">
         <div className="flex items-center justify-between gap-2 px-6 py-4 border-b border-stone-200">
           <h2 id="create-bug-modal-title" className="text-lg font-semibold text-stone-800">
@@ -211,6 +212,7 @@ export function CreateBugModal({
             </button>
           </div>
         </form>
+      </div>
       </div>
     </div>
   );
