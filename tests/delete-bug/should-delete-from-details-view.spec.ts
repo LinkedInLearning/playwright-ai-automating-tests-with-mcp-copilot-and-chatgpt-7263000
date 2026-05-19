@@ -1,11 +1,11 @@
 import { test, expect } from '../fixtures/pages';
-import { login, createBug, deleteBugIfExists } from './test-helpers';
+import { createBug, deleteBugIfExists } from './test-helpers';
 
 test.describe('Delete Bug - from details view', () => {
   let title: string;
 
-  test.beforeEach(async ({ page, boardPage, createBugModal }) => {
-    await login(page);
+  test.beforeEach(async ({ page, loginPage, boardPage, createBugModal }) => {
+    await loginPage.loginWithFirstUser();
     title = `delete-bug-${Date.now()}`;
     await createBug(page, title, boardPage, createBugModal);
   });
