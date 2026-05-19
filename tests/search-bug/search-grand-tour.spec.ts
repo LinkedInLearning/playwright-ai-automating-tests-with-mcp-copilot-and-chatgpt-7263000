@@ -1,6 +1,5 @@
-import { test, expect } from '@playwright/test';
+import { test, expect } from '../fixtures/pages';
 import { LoginPage } from '../pages/LoginPage';
-import { BoardPage } from '../pages/BoardPage';
 
 const bugData = [
   { title: 'Login page crashes on empty password', severity: 'HIGH', owner: 'buggy', description: 'App crashes when submitting an empty password on login.' },
@@ -18,9 +17,8 @@ const bugData = [
 test.describe('Search Bug', () => {
   let createdBugIds: number[] = [];
 
-  test.beforeEach(async ({ page, request }) => {
+  test.beforeEach(async ({ page, request, loginPage, boardPage }) => {
     // Arrange - Login via UI
-    const loginPage = new LoginPage(page);
     await loginPage.goto();
     await loginPage.login('buggy', '1970beetle');
 
@@ -43,10 +41,7 @@ test.describe('Search Bug', () => {
     createdBugIds = [];
   });
 
-  test('Search bugs by title on the board page', async ({ page }) => {
-    // Arrange
-    const boardPage = new BoardPage(page);
-
+  test('Search bugs by title on the board page', async ({ boardPage }) => {
     // Act & Assert - Search "page" → all 10 bugs visible
     await boardPage.searchByTitle('page');
 

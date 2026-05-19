@@ -20,6 +20,8 @@ We use the **Page Object Model** pattern to encapsulate page structure and behav
 
 ```
 tests/
+  fixtures/            ← Fixture definitions for page objects
+    pages.ts
   pages/               ← Page object classes
     LoginPage.ts
     BoardPage.ts
@@ -184,18 +186,191 @@ export class CreateBugModal {
 }
 ```
 
-### Avoiding Anti-Patterns
+## Page Object Fixtures
 
-| ❌ Anti-Pattern | ✅ Correct |
+**Rule:** All tests must obtain page object instances through fixtures, not by constructing them directly.
+
+Fixtures provide automatic teardown, proper lifecycle management, and consistent page object initialization across all tests. This prevents memory leaks, ensures isolation, and makes test code cleaner.
+
+### Why Fixtures Over Direct Construction?
+
+- **Automatic teardown** – Playwright manages page object lifecycle without manual cleanup
+- **Isolation** – Each test gets a fresh instance; no state leakage between tests
+- **Composition** – Fixtures can depend on other fixtures, enabling complex test setups
+- **Reusability** – Define once, use across many test files
+- **Easy mocking** – Replace fixtures in specific tests without changing test code
+
+### Fixture File Structure
+
+Create a single fixture file under `tests/fixtures/` for all page object fixtures:
+
+```typescript
+// tests/fixtures/pages.ts
+import { test as base, Page } from '@playwright/test';
+import { LoginPage } from '../pages/LoginPage';
+import { BoardPage } from '../pages/BoardPage';
+import { CreateBugModal } from '../pages/CreateBugModal';
+import { EditBugModal } from '../pages/EditBugModal';
+
+// Declare fixture types for TypeScript support
+type PagesFixtures = {
+  loginPage: LoginPage;
+  boardPage: BoardPage;
+  createBugModal: CreateBugModal;
+  editBugModal: EditBugModal;
+};
+
+// Create and export custom test function with fixtures
+export const test = base.extend<PagesFixtures>({
+  loginPage: async ({ page }, use) => {
+    const loginPage = new LoginPage(page);
+    await use(loginPage);
+    // Cleanup happens automatically
+  },
+
+  boardPage: async ({ page }, use) => {
+    const boardPage = new BoardPage(page);
+    await use(boardPage);
+  },
+
+  createBugModal: async ({ page }, use) => {
+    const modal = new CreateBugModal(page);
+    await use(modal);
+  },
+
+  editBugModal: async ({ page }, use) => {
+    const modal = new EditBugModal(page);
+    await use(modal);
+  },
+});
+
+export { expect } from '@playwright/test';
+```
+
+### Using Page Object Fixtures in Tests
+
+Import the custom `test` function from your fixtures file instead of `@playwright/test`:
+
+```typescript
+// tests/login/login-success.spec.ts
+import { test, expect } from '../fixtures/pages';
+
+test('user can log in with valid credentials', async ({ loginPage, page }) => {
+  // Arrange
+  await loginPage.goto();
+
+  // Act
+  await loginPage.login('alice', 'password123');
+
+  // Assert
+  await expect(page).toHaveURL('/board');
+});
+```
+
+Notice:
+- Import `test` from `../fixtures/pages`, not from `@playwright/test`
+- Destructure fixtures from test parameters: `{ loginPage, page }`
+- No manual instantiation: `const loginPage = new LoginPage(page)` ✅ Removed
+- Tests are cleaner and focus purely on behavior
+
+### Fixture Parameters and Dependencies
+
+Fixtures can depend on other fixtures. For example, a fixture that logs in before running a test:
+
+```typescript
+// tests/fixtures/pages.ts (extended)
+import { test as base } from '@playwright/test';
+
+export const test = base.extend<PagesFixtures>({
+  // ... other fixtures ...
+
+  boardPageLoggedIn: async ({ page, loginPage }, use) => {
+    // This fixture depends on loginPage
+    // It automatically logs in before the test runs
+    await loginPage.goto();
+    await loginPage.login('alice', 'password123');
+    
+    const boardPage = new BoardPage(page);
+    await use(boardPage);
+  },
+});
+```
+
+Then use it in tests:
+
+```typescript
+test('user can create a bug from the board', async ({ boardPageLoggedIn }) => {
+  // Already logged in, ready to interact with board
+  await boardPageLoggedIn.clickCreateButton();
+  // ...
+});
+```
+
+### Scoping Fixtures
+
+Control when fixtures are created and destroyed using the `scope` option:
+
+```typescript
+export const test = base.extend<PagesFixtures>({
+  // scope: 'test' (default) – Fresh instance per test
+  loginPage: async ({ page }, use) => {
+    const loginPage = new LoginPage(page);
+    await use(loginPage);
+  },
+
+  // scope: 'worker' – Shared across tests in same worker (faster)
+  sharedResource: async ({}, use) => {
+    const resource = await setupExpensiveResource();
+    await use(resource);
+    await resource.cleanup();
+  },
+});
+```
+
+Use `scope: 'test'` (default) for page objects to ensure test isolation.
+
+### Common Fixture Patterns
+
+#### Pre-authenticated Fixture
+
+```typescript
+boardPageAuthenticatedAs: async ({ page }, use, testInfo) => {
+  const username = testInfo.title.includes('admin') ? 'admin' : 'user';
+  const loginPage = new LoginPage(page);
+  await loginPage.goto();
+  await loginPage.login(username, 'password123');
+  
+  const boardPage = new BoardPage(page);
+  await use(boardPage);
+},
+```
+
+#### Modal/Dialog Fixture
+
+```typescript
+createModalOpen: async ({ page, boardPage }, use) => {
+  const modal = new CreateBugModal(page);
+  await boardPage.goto();
+  await boardPage.clickCreateButton();
+  await modal.waitForVisible();
+  await use(modal);
+},
+```
+
+### Anti-Pattern: Constructing Page Objects in Tests
+
+| ❌ Don't Do This | ✅ Do This Instead |
 |---|---|
-| Raw page calls in tests | Encapsulate in page objects |
-| Hardcoded locators in tests | Define locators in page object |
-| Methods that do too much | Split into single-responsibility methods |
-| Ignoring waits/assertions | Use explicit waits; assert after actions |
-| Testing implementation details | Test user-facing behavior only |
+| `const loginPage = new LoginPage(page);` | Import from `../fixtures/pages` and request as parameter |
+| Instantiate in every test | Define once in fixture, reuse everywhere |
+| Manual cleanup in test | Fixtures handle automatic teardown |
+| Mixed import sources (`@playwright/test` + custom) | Always import `test` from `../fixtures/pages` |
 
 ### References
 
+- [Playwright Test Fixtures](https://playwright.dev/docs/test-fixtures)
+- [Fixture Dependencies](https://playwright.dev/docs/test-fixtures#fixture-dependencies)
+- [Fixture Scope](https://playwright.dev/docs/test-fixtures#scope)
 - [Playwright Page Object Model](https://playwright.dev/docs/pom)
 - [Playwright Best Practices](https://playwright.dev/docs/best-practices)
 - [Playwright Locators](https://playwright.dev/docs/locators)

@@ -1,11 +1,7 @@
-import { test, expect } from '@playwright/test';
-import { LoginPage } from './pages/LoginPage';
+import { test, expect } from './fixtures/pages';
 
 test.describe('Seed tests', () => {
-  test('login with first user from users.json', { tag: '@seed' }, async ({ page }) => {
-    // Arrange
-    const loginPage = new LoginPage(page);
-
+  test('login with first user from users.json', { tag: '@seed' }, async ({ loginPage, page }) => {
     // Act
     await loginPage.loginWithFirstUser();
 

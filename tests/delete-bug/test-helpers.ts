@@ -9,37 +9,37 @@ export async function login(page: Page) {
   await loginPage.loginWithFirstUser();
 }
 
-export async function createBug(page: Page, title: string) {
-  const boardPage = new BoardPage(page);
-  const createBugModal = new CreateBugModal(page);
+export async function createBug(page: Page, title: string, boardPage?: BoardPage, createBugModal?: CreateBugModal) {
+  const board = boardPage || new BoardPage(page);
+  const modal = createBugModal || new CreateBugModal(page);
 
-  await boardPage.clickNewBugButton();
-  await expect(createBugModal.dialog).toBeVisible();
-  await createBugModal.fillBugForm({
+  await board.clickNewBugButton();
+  await expect(modal.dialog).toBeVisible();
+  await modal.fillBugForm({
     title,
     severity: 'mid',
     owner: 'tester',
     description: 'created by test',
   });
-  await createBugModal.submit();
+  await modal.submit();
 
   // wait for the table to contain the title
   const row = page.locator('table[aria-label="Bugs"] >> text=' + title).first();
   await row.waitFor({ state: 'visible', timeout: 5000 });
 }
 
-export async function deleteBugIfExists(page: Page, title: string) {
-  const boardPage = new BoardPage(page);
-  const editBugModal = new EditBugModal(page);
+export async function deleteBugIfExists(page: Page, title: string, boardPage?: BoardPage, editBugModal?: EditBugModal) {
+  const board = boardPage || new BoardPage(page);
+  const modal = editBugModal || new EditBugModal(page);
 
   const locator = page.locator('table[aria-label="Bugs"] >> text=' + title);
   const count = await locator.count();
   if (count === 0) return;
 
   // click row to open edit modal
-  await boardPage.clickBugByTitle(title);
-  await expect(editBugModal.dialog).toBeVisible();
-  await editBugModal.delete();
+  await board.clickBugByTitle(title);
+  await expect(modal.dialog).toBeVisible();
+  await modal.delete();
 
   // wait until bug is gone
   await expect(locator).toHaveCount(0);
