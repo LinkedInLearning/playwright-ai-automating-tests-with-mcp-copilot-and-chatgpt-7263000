@@ -33,6 +33,13 @@ export async function deleteBugIfExists(
   const count = await locator.count();
   if (count === 0) return;
 
+  if (await editBugModal.dialog.isVisible().catch(() => false)) {
+    if (await editBugModal.confirmationDialog.isVisible().catch(() => false)) {
+      await editBugModal.cancelDeleteConfirmation();
+    }
+    await editBugModal.cancel();
+  }
+
   await boardPage.clickBugByTitle(title);
   await expect(editBugModal.dialog).toBeVisible();
   await editBugModal.delete();

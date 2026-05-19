@@ -18,10 +18,15 @@ test.describe('Delete Bug - cancel retains bug', () => {
     // Act
     await boardPage.clickBugByTitle(title);
     await expect(editBugModal.dialog).toBeVisible();
-    await editBugModal.cancel();
+    await editBugModal.openDeleteConfirmation();
+    await editBugModal.cancelDeleteConfirmation();
 
     // Assert
+    await expect(editBugModal.dialog).toBeVisible();
     const titleLocator = page.locator('table[aria-label="Bugs"] >> text=' + title);
     await expect(titleLocator).toHaveCount(1);
+
+    // Cleanup state for afterEach
+    await editBugModal.cancel();
   });
 });
