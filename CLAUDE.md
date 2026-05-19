@@ -8,7 +8,12 @@ When working on the **BuggyBoard** web app (bug tracker SUT for the Playwright c
    - `specs/engineering/tech-stack.md` – stack and constraints
    - `specs/engineering/coding-standards.md` – style and architecture
    - `specs/engineering/development-process.md` – spec-first, feature-by-feature, pause for review
+   - `specs/engineering/test-automation-patterns.md` – Page Object Model (POM) and test structure
 2. **For a feature**, use the corresponding spec in `specs/features/` (e.g. `specs/features/01-login.md`).
 3. **Update** `specs/PROGRESS.md` when a feature or step is completed.
 4. **Pause for review** after each feature; do not start the next feature until the user directs.
 5. **Ask the user** when a decision is unclear instead of assuming.
+6. **Write atomic tests with page objects** – every test focuses on one behavior and uses page object classes.
+   - Tests should follow the Arrange-Act-Assert pattern.
+   - Each test should be independent and not rely on the state left by previous tests.
+   - Page objects belong under `tests/pages/` (one class per file); tests must use page objects instead of raw page call chains.

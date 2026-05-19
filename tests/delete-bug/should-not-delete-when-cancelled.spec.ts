@@ -1,4 +1,6 @@
 import { test, expect } from '@playwright/test';
+import { BoardPage } from '../pages/BoardPage';
+import { EditBugModal } from '../pages/EditBugModal';
 import { login, createBug, deleteBugIfExists } from './test-helpers';
 
 test.describe('Delete Bug - cancel retains bug', () => {
@@ -15,14 +17,16 @@ test.describe('Delete Bug - cancel retains bug', () => {
   });
 
   test('should_not_delete_when_cancelled', async ({ page }) => {
-    const row = page.locator('table[aria-label="Bugs"] tbody tr', { hasText: title }).first();
-    await row.click();
+    // Arrange
+    const boardPage = new BoardPage(page);
+    const editBugModal = new EditBugModal(page);
 
-    const dialog = page.getByRole('dialog', { name: /Edit bug/ });
-    const cancelButton = dialog.getByRole('button', { name: 'Cancel' });
-    await expect(cancelButton).toBeVisible();
-    await cancelButton.click();
+    // Act
+    await boardPage.clickBugByTitle(title);
+    await expect(editBugModal.dialog).toBeVisible();
+    await editBugModal.cancel();
 
+    // Assert
     const titleLocator = page.locator('table[aria-label="Bugs"] >> text=' + title);
     await expect(titleLocator).toHaveCount(1);
   });

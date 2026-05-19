@@ -1,52 +1,48 @@
-import { Page } from '@playwright/test';
-import { readFileSync } from 'fs';
-import { join } from 'path';
-
-interface User { username: string; password: string }
+import { Page, expect } from '@playwright/test';
+import { LoginPage } from '../pages/LoginPage';
+import { BoardPage } from '../pages/BoardPage';
+import { CreateBugModal } from '../pages/CreateBugModal';
+import { EditBugModal } from '../pages/EditBugModal';
 
 export async function login(page: Page) {
-  const usersPath = join(process.cwd(), 'users.json');
-  const rawUsers = readFileSync(usersPath, 'utf-8');
-  const users = JSON.parse(rawUsers) as User[];
-  const firstUser = users[0];
-
-  await page.goto('/login');
-  await page.getByLabel('Username').fill(firstUser.username);
-  await page.getByLabel('Password').fill(firstUser.password);
-  await page.getByRole('button', { name: 'Login' }).click();
-  await page.waitForURL('**/board');
+  const loginPage = new LoginPage(page);
+  await loginPage.loginWithFirstUser();
 }
 
 export async function createBug(page: Page, title: string) {
-  await page.getByRole('button', { name: 'New Bug' }).click();
-  const dialog = page.getByRole('dialog', { name: 'Create bug' });
-  await expectVisible(dialog);
-  await dialog.getByLabel('Title').fill(title);
-  await dialog.getByLabel('Severity').selectOption('mid');
-  await dialog.getByLabel('Owner').fill('tester');
-  await dialog.getByLabel('Description').fill('created by test');
-  await dialog.getByRole('button', { name: 'Save' }).click();
+  const boardPage = new BoardPage(page);
+  const createBugModal = new CreateBugModal(page);
+
+  await boardPage.clickNewBugButton();
+  await expect(createBugModal.dialog).toBeVisible();
+  await createBugModal.fillBugForm({
+    title,
+    severity: 'mid',
+    owner: 'tester',
+    description: 'created by test',
+  });
+  await createBugModal.submit();
+
   // wait for the table to contain the title
   const row = page.locator('table[aria-label="Bugs"] >> text=' + title).first();
   await row.waitFor({ state: 'visible', timeout: 5000 });
 }
 
 export async function deleteBugIfExists(page: Page, title: string) {
+  const boardPage = new BoardPage(page);
+  const editBugModal = new EditBugModal(page);
+
   const locator = page.locator('table[aria-label="Bugs"] >> text=' + title);
   const count = await locator.count();
   if (count === 0) return;
-  // click row then delete from edit modal
-  const row = page.locator('table[aria-label="Bugs"] tbody tr', { hasText: title }).first();
-  await row.click();
-  const dialog = page.getByRole('dialog', { name: /Edit bug/ });
-  const deleteButton = dialog.getByRole('button', { name: 'Delete' });
-  await deleteButton.click();
-  // wait until bug is gone
-  await expectGone(page.locator('table[aria-label="Bugs"] >> text=' + title));
-}
 
-async function expectVisible(locator: any) {
-  await locator.waitFor({ state: 'visible', timeout: 5000 });
+  // click row to open edit modal
+  await boardPage.clickBugByTitle(title);
+  await expect(editBugModal.dialog).toBeVisible();
+  await editBugModal.delete();
+
+  // wait until bug is gone
+  await expect(locator).toHaveCount(0);
 }
 
 async function expectGone(locator: any) {

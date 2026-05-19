@@ -1,4 +1,6 @@
 import { test, expect } from '@playwright/test';
+import { BoardPage } from '../pages/BoardPage';
+import { EditBugModal } from '../pages/EditBugModal';
 import { login, createBug, deleteBugIfExists } from './test-helpers';
 
 test.describe('Delete Bug - create then delete', () => {
@@ -15,14 +17,16 @@ test.describe('Delete Bug - create then delete', () => {
   });
 
   test('should_create_then_delete_bug', async ({ page }) => {
-    const row = page.locator('table[aria-label="Bugs"] tbody tr', { hasText: title }).first();
-    await row.click();
+    // Arrange
+    const boardPage = new BoardPage(page);
+    const editBugModal = new EditBugModal(page);
 
-    const dialog = page.getByRole('dialog', { name: /Edit bug/ });
-    const deleteButton = dialog.getByRole('button', { name: 'Delete' });
-    await expect(deleteButton).toBeVisible();
-    await deleteButton.click();
+    // Act
+    await boardPage.clickBugByTitle(title);
+    await expect(editBugModal.dialog).toBeVisible();
+    await editBugModal.delete();
 
+    // Assert
     const titleLocator = page.locator('table[aria-label="Bugs"] >> text=' + title);
     await expect(titleLocator).toHaveCount(0);
   });

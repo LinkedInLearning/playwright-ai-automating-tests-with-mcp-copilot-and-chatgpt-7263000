@@ -1,4 +1,6 @@
 import { test, expect } from '@playwright/test';
+import { LoginPage } from '../pages/LoginPage';
+import { BoardPage } from '../pages/BoardPage';
 
 const bugData = [
   { title: 'Login page crashes on empty password', severity: 'HIGH', owner: 'buggy', description: 'App crashes when submitting an empty password on login.' },
@@ -17,12 +19,10 @@ test.describe('Search Bug', () => {
   let createdBugIds: number[] = [];
 
   test.beforeEach(async ({ page, request }) => {
-    // Login via UI
-    await page.goto('/login');
-    await page.getByLabel('Username').fill('buggy');
-    await page.getByLabel('Password').fill('1970beetle');
-    await page.getByRole('button', { name: 'Login' }).click();
-    await page.waitForURL(/\/board$/);
+    // Arrange - Login via UI
+    const loginPage = new LoginPage(page);
+    await loginPage.goto();
+    await loginPage.login('buggy', '1970beetle');
 
     // Create 10 bugs via API
     createdBugIds = [];
@@ -44,53 +44,54 @@ test.describe('Search Bug', () => {
   });
 
   test('Search bugs by title on the board page', async ({ page }) => {
-    const searchInput = page.getByRole('search', { name: 'Search bugs by title' });
+    // Arrange
+    const boardPage = new BoardPage(page);
 
-    // Search "page" → all 10 bugs visible
-    await searchInput.fill('page');
+    // Act & Assert - Search "page" → all 10 bugs visible
+    await boardPage.searchByTitle('page');
 
-    await expect(page.getByRole('cell', { name: 'Login page crashes on empty password', exact: true })).toBeVisible();
-    await expect(page.getByRole('cell', { name: 'Login page redirect fails after auth', exact: true })).toBeVisible();
-    await expect(page.getByRole('cell', { name: 'Login page error message not shown', exact: true })).toBeVisible();
-    await expect(page.getByRole('cell', { name: 'Login page enter key stops working', exact: true })).toBeVisible();
-    await expect(page.getByRole('cell', { name: 'Board page fails to load', exact: true })).toBeVisible();
-    await expect(page.getByRole('cell', { name: 'Search field disappears on page resize', exact: true })).toBeVisible();
-    await expect(page.getByRole('cell', { name: 'Severity dropdown missing on create page', exact: true })).toBeVisible();
-    await expect(page.getByRole('cell', { name: 'Create page modal does not close on cancel', exact: true })).toBeVisible();
-    await expect(page.getByRole('cell', { name: 'Title bar logo missing on page load', exact: true })).toBeVisible();
-    await expect(page.getByRole('cell', { name: 'Sort resets on page refresh', exact: true })).toBeVisible();
+    await expect(await boardPage.getBugCellByTitle('Login page crashes on empty password')).toBeVisible();
+    await expect(await boardPage.getBugCellByTitle('Login page redirect fails after auth')).toBeVisible();
+    await expect(await boardPage.getBugCellByTitle('Login page error message not shown')).toBeVisible();
+    await expect(await boardPage.getBugCellByTitle('Login page enter key stops working')).toBeVisible();
+    await expect(await boardPage.getBugCellByTitle('Board page fails to load')).toBeVisible();
+    await expect(await boardPage.getBugCellByTitle('Search field disappears on page resize')).toBeVisible();
+    await expect(await boardPage.getBugCellByTitle('Severity dropdown missing on create page')).toBeVisible();
+    await expect(await boardPage.getBugCellByTitle('Create page modal does not close on cancel')).toBeVisible();
+    await expect(await boardPage.getBugCellByTitle('Title bar logo missing on page load')).toBeVisible();
+    await expect(await boardPage.getBugCellByTitle('Sort resets on page refresh')).toBeVisible();
 
     // Clear → search "login" → 4 login bugs visible, 6 non-login bugs not visible
-    await page.getByRole('button', { name: 'Clear search' }).click();
-    await searchInput.fill('login');
+    await boardPage.clearSearch();
+    await boardPage.searchByTitle('login');
 
-    await expect(page.getByRole('cell', { name: 'Login page crashes on empty password', exact: true })).toBeVisible();
-    await expect(page.getByRole('cell', { name: 'Login page redirect fails after auth', exact: true })).toBeVisible();
-    await expect(page.getByRole('cell', { name: 'Login page error message not shown', exact: true })).toBeVisible();
-    await expect(page.getByRole('cell', { name: 'Login page enter key stops working', exact: true })).toBeVisible();
+    await expect(await boardPage.getBugCellByTitle('Login page crashes on empty password')).toBeVisible();
+    await expect(await boardPage.getBugCellByTitle('Login page redirect fails after auth')).toBeVisible();
+    await expect(await boardPage.getBugCellByTitle('Login page error message not shown')).toBeVisible();
+    await expect(await boardPage.getBugCellByTitle('Login page enter key stops working')).toBeVisible();
 
-    await expect(page.getByRole('cell', { name: 'Board page fails to load', exact: true })).not.toBeVisible();
-    await expect(page.getByRole('cell', { name: 'Search field disappears on page resize', exact: true })).not.toBeVisible();
-    await expect(page.getByRole('cell', { name: 'Severity dropdown missing on create page', exact: true })).not.toBeVisible();
-    await expect(page.getByRole('cell', { name: 'Create page modal does not close on cancel', exact: true })).not.toBeVisible();
-    await expect(page.getByRole('cell', { name: 'Title bar logo missing on page load', exact: true })).not.toBeVisible();
-    await expect(page.getByRole('cell', { name: 'Sort resets on page refresh', exact: true })).not.toBeVisible();
+    await expect(await boardPage.getBugCellByTitle('Board page fails to load')).not.toBeVisible();
+    await expect(await boardPage.getBugCellByTitle('Search field disappears on page resize')).not.toBeVisible();
+    await expect(await boardPage.getBugCellByTitle('Severity dropdown missing on create page')).not.toBeVisible();
+    await expect(await boardPage.getBugCellByTitle('Create page modal does not close on cancel')).not.toBeVisible();
+    await expect(await boardPage.getBugCellByTitle('Title bar logo missing on page load')).not.toBeVisible();
+    await expect(await boardPage.getBugCellByTitle('Sort resets on page refresh')).not.toBeVisible();
 
     // Clear → search "xyzzy" → no-results message shown, no bug titles visible
-    await page.getByRole('button', { name: 'Clear search' }).click();
-    await searchInput.fill('xyzzy');
+    await boardPage.clearSearch();
+    await boardPage.searchByTitle('xyzzy');
 
-    await expect(page.getByRole('cell', { name: 'No bugs matched.', exact: true })).toBeVisible();
+    await expect(await boardPage.getNoResultsMessage()).toBeVisible();
 
-    await expect(page.getByRole('cell', { name: 'Login page crashes on empty password', exact: true })).not.toBeVisible();
-    await expect(page.getByRole('cell', { name: 'Login page redirect fails after auth', exact: true })).not.toBeVisible();
-    await expect(page.getByRole('cell', { name: 'Login page error message not shown', exact: true })).not.toBeVisible();
-    await expect(page.getByRole('cell', { name: 'Login page enter key stops working', exact: true })).not.toBeVisible();
-    await expect(page.getByRole('cell', { name: 'Board page fails to load', exact: true })).not.toBeVisible();
-    await expect(page.getByRole('cell', { name: 'Search field disappears on page resize', exact: true })).not.toBeVisible();
-    await expect(page.getByRole('cell', { name: 'Severity dropdown missing on create page', exact: true })).not.toBeVisible();
-    await expect(page.getByRole('cell', { name: 'Create page modal does not close on cancel', exact: true })).not.toBeVisible();
-    await expect(page.getByRole('cell', { name: 'Title bar logo missing on page load', exact: true })).not.toBeVisible();
-    await expect(page.getByRole('cell', { name: 'Sort resets on page refresh', exact: true })).not.toBeVisible();
+    await expect(await boardPage.getBugCellByTitle('Login page crashes on empty password')).not.toBeVisible();
+    await expect(await boardPage.getBugCellByTitle('Login page redirect fails after auth')).not.toBeVisible();
+    await expect(await boardPage.getBugCellByTitle('Login page error message not shown')).not.toBeVisible();
+    await expect(await boardPage.getBugCellByTitle('Login page enter key stops working')).not.toBeVisible();
+    await expect(await boardPage.getBugCellByTitle('Board page fails to load')).not.toBeVisible();
+    await expect(await boardPage.getBugCellByTitle('Search field disappears on page resize')).not.toBeVisible();
+    await expect(await boardPage.getBugCellByTitle('Severity dropdown missing on create page')).not.toBeVisible();
+    await expect(await boardPage.getBugCellByTitle('Create page modal does not close on cancel')).not.toBeVisible();
+    await expect(await boardPage.getBugCellByTitle('Title bar logo missing on page load')).not.toBeVisible();
+    await expect(await boardPage.getBugCellByTitle('Sort resets on page refresh')).not.toBeVisible();
   });
 });
