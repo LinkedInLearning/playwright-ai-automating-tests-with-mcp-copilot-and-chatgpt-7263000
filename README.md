@@ -6,6 +6,12 @@ This is the repository for the LinkedIn Learning course `Playwright with AI: Age
 
 _See the readme file in the main branch for updated instructions and information._
 
+Modern test automation demands speed, reliability, and the ability to adapt as applications evolve. This course is designed for QA test automation engineers who are responsible for end-to-end, cross-browser automation in CI/CD environments, as well as web developers who want to automate tests to protect their code. Join instructor Andrew Knight as he shows you how to build stable Playwright tests that run consistently across browsers and environments, then enhance your workflows with AI-powered test  generation and self-healing techniques that reduce flakiness and maintenance time. Along the way, you'll also learn how to optimize test execution, apply predictive test selection, and integrate Playwright into CI/CD pipelines for continuous testing and faster releases.
+
+## Learning Objectives
+- Build reliable end‑to‑end Playwright tests across browsers and environments.
+- Create AI‑enhanced, self‑healing test scripts that adapt to UI changes.
+- Generate and refine test cases from natural‑language prompts.
 
 ## Overview
 
@@ -88,7 +94,14 @@ The recommended coding agent is **GitHub Copilot**. It works out of the box with
 
 You could use other coding agents like **Claude Code** or **Cursor** if you choose to run the project locally, but this is _not recommended_ unless you are already very comfortable with your coding agent of choice. You will need to set them up on your own. Oftentimes you can use a free tier or a trial period, which should be sufficient for the scope of this course. However, the course videos will teach proper AI setup _only for Copilot_. They do **not** teach the different configurations required for Cursor or Claude. Trying to use coding agents other than Copilot could cause confusion and breakages.
 
+## Instructor 
+
+Andrew Knight
+
+The Automation Panda
+
+Andrew Knight is the Automation Panda: an advocate for software quality who loves to help others.For about a decade, Andrew worked as a Software Development Engineer in Test (SDET), building solutions to testing problems and rising from junior level to team lead across multiple companies. Then, he spent almost two years leading developer relations at Applitools, where he championed visual testing with AI and served as Director of Test Automation University. He currently leads both Product and Engineering for Cycle Labs, shaping its testing platform for supply chain systems.Andrew speaks internationally at conferences, webinars, and workshops, and writes a software blog at AutomationPanda.com.
 
 [0]: # "Replace these placeholder URLs with actual course URLs"
-[lil-course-url]: https://www.linkedin.com/learning/
-[lil-thumbnail-url]: https://media.licdn.com/dms/image/v2/D4E0DAQG0eDHsyOSqTA/learning-public-crop_675_1200/B4EZVdqqdwHUAY-/0/1741033220778?e=2147483647&v=beta&t=FxUDo6FA8W8CiFROwqfZKL_mzQhYx9loYLfjN-LNjgA
+[lil-course-url]: https://www.linkedin.com/learning/playwright-with-ai-agents-context-and-test-automation-patterns
+[lil-thumbnail-url]: https://media.licdn.com/dms/image/v2/D560DAQEPA6JBEfUuZg/learning-public-crop_675_1200/B56Z69Xl.BGoAY-/0/1781293539454?e=2147483647&v=beta&t=hJlL_-EsMnpsVwFDJou8wD8LdTPBEGSamoPOgnZw2Oc
