@@ -1,12 +1,26 @@
 import express from "express";
 import { db, initBugsTable } from "./db.js";
 import { login } from "./authService.js";
-import { createBug, deleteBug, getBug, listBugs, updateBug } from "./bugService.js";
+import {
+  createBug,
+  deleteBug,
+  getBug,
+  listBugs,
+  updateBug,
+} from "./bugService.js";
 
 const app = express();
 const PORT = 3000;
 
 initBugsTable();
+
+function parseBugId(value: string): number | null {
+  if (!/^\d+$/.test(value)) {
+    return null;
+  }
+  const id = Number(value);
+  return Number.isSafeInteger(id) ? id : null;
+}
 
 app.use(express.json());
 
@@ -35,8 +49,16 @@ app.get("/api/health", (_req, res) => {
 });
 
 app.post("/api/login", (req, res) => {
-  const username = (req.body?.username as string) ?? "";
-  const password = (req.body?.password as string) ?? "";
+  const body = req.body ?? {};
+  const username = body.username ?? "";
+  const password = body.password ?? "";
+  if (typeof username !== "string" || typeof password !== "string") {
+    res.status(400).json({
+      error: "invalid_credentials_format",
+      message: "Username and password must be strings.",
+    });
+    return;
+  }
   const result = login(username, password);
 
   if (result.success) {
@@ -78,9 +100,11 @@ app.get("/api/bugs", (_req, res) => {
 });
 
 app.get("/api/bugs/:id", (req, res) => {
-  const id = parseInt(req.params.id, 10);
-  if (Number.isNaN(id)) {
-    res.status(400).json({ error: "invalid_id", message: "Bug ID must be a number." });
+  const id = parseBugId(req.params.id);
+  if (id === null) {
+    res
+      .status(400)
+      .json({ error: "invalid_id", message: "Bug ID must be a number." });
     return;
   }
   const bug = getBug(id);
@@ -92,16 +116,19 @@ app.get("/api/bugs/:id", (req, res) => {
 });
 
 app.put("/api/bugs/:id", (req, res) => {
-  const id = parseInt(req.params.id, 10);
-  if (Number.isNaN(id)) {
-    res.status(400).json({ error: "invalid_id", message: "Bug ID must be a number." });
+  const id = parseBugId(req.params.id);
+  if (id === null) {
+    res
+      .status(400)
+      .json({ error: "invalid_id", message: "Bug ID must be a number." });
     return;
   }
   const body = req.body ?? {};
   const title = typeof body.title === "string" ? body.title : "";
   const severity = typeof body.severity === "string" ? body.severity : "";
   const owner = typeof body.owner === "string" ? body.owner : "";
-  const description = typeof body.description === "string" ? body.description : "";
+  const description =
+    typeof body.description === "string" ? body.description : "";
   const state = typeof body.state === "string" ? body.state : "";
 
   const result = updateBug(id, { title, severity, owner, description, state });
@@ -118,28 +145,43 @@ app.put("/api/bugs/:id", (req, res) => {
 
   switch (result.code) {
     case "BLANK_TITLE":
-      res.status(400).json({ error: "blank_title", message: "Title is required." });
+      res
+        .status(400)
+        .json({ error: "blank_title", message: "Title is required." });
       return;
     case "BLANK_SEVERITY":
     case "INVALID_SEVERITY":
-      res.status(400).json({ error: "blank_severity", message: "Severity is required (high, mid, or low)." });
+      res.status(400).json({
+        error: "blank_severity",
+        message: "Severity is required (high, mid, or low).",
+      });
       return;
     case "BLANK_OWNER":
-      res.status(400).json({ error: "blank_owner", message: "Owner is required." });
+      res
+        .status(400)
+        .json({ error: "blank_owner", message: "Owner is required." });
       return;
     case "BLANK_DESCRIPTION":
-      res.status(400).json({ error: "blank_description", message: "Description is required." });
+      res.status(400).json({
+        error: "blank_description",
+        message: "Description is required.",
+      });
       return;
     case "INVALID_STATE":
-      res.status(400).json({ error: "invalid_state", message: "State must be Open or Closed." });
+      res.status(400).json({
+        error: "invalid_state",
+        message: "State must be Open or Closed.",
+      });
       return;
   }
 });
 
 app.delete("/api/bugs/:id", (req, res) => {
-  const id = parseInt(req.params.id, 10);
-  if (Number.isNaN(id)) {
-    res.status(400).json({ error: "invalid_id", message: "Bug ID must be a number." });
+  const id = parseBugId(req.params.id);
+  if (id === null) {
+    res
+      .status(400)
+      .json({ error: "invalid_id", message: "Bug ID must be a number." });
     return;
   }
   const result = deleteBug(id);
@@ -155,9 +197,15 @@ app.post("/api/bugs", (req, res) => {
   const title = typeof body.title === "string" ? body.title : "";
   const severity = typeof body.severity === "string" ? body.severity : "";
   const owner = typeof body.owner === "string" ? body.owner : "";
-  const description = typeof body.description === "string" ? body.description : "";
+  const description =
+    typeof body.description === "string" ? body.description : "";
 
-  const result = createBug({ title, severity: severity as "high" | "mid" | "low", owner, description });
+  const result = createBug({
+    title,
+    severity: severity as "high" | "mid" | "low",
+    owner,
+    description,
+  });
 
   if (result.success) {
     res.status(201).json(result.bug);
@@ -166,17 +214,27 @@ app.post("/api/bugs", (req, res) => {
 
   switch (result.code) {
     case "BLANK_TITLE":
-      res.status(400).json({ error: "blank_title", message: "Title is required." });
+      res
+        .status(400)
+        .json({ error: "blank_title", message: "Title is required." });
       return;
     case "BLANK_SEVERITY":
     case "INVALID_SEVERITY":
-      res.status(400).json({ error: "blank_severity", message: "Severity is required (high, mid, or low)." });
+      res.status(400).json({
+        error: "blank_severity",
+        message: "Severity is required (high, mid, or low).",
+      });
       return;
     case "BLANK_OWNER":
-      res.status(400).json({ error: "blank_owner", message: "Owner is required." });
+      res
+        .status(400)
+        .json({ error: "blank_owner", message: "Owner is required." });
       return;
     case "BLANK_DESCRIPTION":
-      res.status(400).json({ error: "blank_description", message: "Description is required." });
+      res.status(400).json({
+        error: "blank_description",
+        message: "Description is required.",
+      });
       return;
   }
 });

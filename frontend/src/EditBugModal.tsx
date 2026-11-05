@@ -50,7 +50,12 @@ export function EditBugModal({ bug, onClose, onSaved }: EditBugModalProps) {
   const [validationErrors, setValidationErrors] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
   const [deleting, setDeleting] = useState(false);
+  const [deleteConfirmationOpen, setDeleteConfirmationOpen] = useState(false);
+  const [deleteErrors, setDeleteErrors] = useState<string[]>([]);
   const titleInputRef = useRef<HTMLInputElement>(null);
+  const deleteButtonRef = useRef<HTMLButtonElement>(null);
+  const deleteConfirmationCancelButtonRef = useRef<HTMLButtonElement>(null);
+  const deleteConfirmationWasOpen = useRef(false);
 
   const isOpen = bug !== null;
 
@@ -64,6 +69,8 @@ export function EditBugModal({ bug, onClose, onSaved }: EditBugModalProps) {
       setValidationErrors([]);
       setLoading(false);
       setDeleting(false);
+      setDeleteConfirmationOpen(false);
+      setDeleteErrors([]);
       queueMicrotask(() => titleInputRef.current?.focus());
     }
   }, [bug]);
@@ -73,12 +80,26 @@ export function EditBugModal({ bug, onClose, onSaved }: EditBugModalProps) {
     function handleEscape(e: KeyboardEvent) {
       if (e.key === "Escape") {
         e.preventDefault();
-        onClose();
+        if (deleting) return;
+        if (deleteConfirmationOpen) {
+          setDeleteConfirmationOpen(false);
+        } else {
+          onClose();
+        }
       }
     }
     window.addEventListener("keydown", handleEscape);
     return () => window.removeEventListener("keydown", handleEscape);
-  }, [isOpen, onClose]);
+  }, [isOpen, onClose, deleteConfirmationOpen, deleting]);
+
+  useEffect(() => {
+    if (deleteConfirmationOpen) {
+      deleteConfirmationCancelButtonRef.current?.focus();
+    } else if (deleteConfirmationWasOpen.current) {
+      deleteButtonRef.current?.focus();
+    }
+    deleteConfirmationWasOpen.current = deleteConfirmationOpen;
+  }, [deleteConfirmationOpen]);
 
   const initial = bug
     ? {
@@ -166,7 +187,7 @@ export function EditBugModal({ bug, onClose, onSaved }: EditBugModalProps) {
   async function handleDelete() {
     if (!bug || deleting || loading) return;
     setDeleting(true);
-    setValidationErrors([]);
+    setDeleteErrors([]);
     try {
       const res = await fetch(`/api/bugs/${bug.id}`, { method: "DELETE" });
       if (res.ok) {
@@ -175,23 +196,36 @@ export function EditBugModal({ bug, onClose, onSaved }: EditBugModalProps) {
         return;
       }
       const data = (await res.json().catch(() => ({}))) as { message?: string };
-      setValidationErrors([data.message ?? "Failed to delete bug."]);
+      setDeleteErrors([data.message ?? "Failed to delete bug."]);
     } catch {
-      setValidationErrors(["Something went wrong. Please try again."]);
+      setDeleteErrors(["Something went wrong. Please try again."]);
     } finally {
       setDeleting(false);
     }
   }
 
+  function openDeleteConfirmation() {
+    setDeleteErrors([]);
+    setDeleteConfirmationOpen(true);
+  }
+
+  function cancelDeleteConfirmation() {
+    if (deleting) return;
+    setDeleteConfirmationOpen(false);
+    setDeleteErrors([]);
+  }
+
   if (!isOpen || !bug) return null;
 
   return (
-    <div
-      className="fixed inset-0 z-50 overflow-y-auto bg-stone-900/50"
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby="edit-bug-modal-title"
-    >
+    <>
+      <div
+        className="fixed inset-0 z-50 overflow-y-auto bg-stone-900/50"
+        role="dialog"
+        aria-modal="true"
+        aria-hidden={deleteConfirmationOpen}
+        aria-labelledby="edit-bug-modal-title"
+      >
       <div className="flex min-h-full items-center justify-center p-4">
       <div className="bg-white rounded-lg shadow-lg w-full max-w-lg border border-stone-200">
         <div className="flex items-center justify-between gap-2 px-6 py-4 border-b border-stone-200">
@@ -311,7 +345,8 @@ export function EditBugModal({ bug, onClose, onSaved }: EditBugModalProps) {
           <div className="flex gap-3 justify-between pt-2">
             <button
               type="button"
-              onClick={handleDelete}
+              ref={deleteButtonRef}
+              onClick={openDeleteConfirmation}
               className="rounded px-4 py-2 text-sm font-medium text-red-700 border border-red-200 bg-white hover:bg-red-50 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
               disabled={loading || deleting}
             >
@@ -338,6 +373,70 @@ export function EditBugModal({ bug, onClose, onSaved }: EditBugModalProps) {
         </form>
       </div>
       </div>
-    </div>
+      </div>
+      {deleteConfirmationOpen && (
+        <div
+          className="fixed inset-0 z-[60] overflow-y-auto bg-stone-900/50"
+          role="alertdialog"
+          aria-modal="true"
+          aria-labelledby="delete-bug-confirmation-title"
+          aria-describedby="delete-bug-confirmation-description"
+        >
+          <div className="flex min-h-full items-center justify-center p-4">
+            <div className="w-full max-w-md rounded-lg border border-stone-200 bg-white shadow-lg">
+              <div className="flex items-center justify-between gap-2 border-b border-stone-200 px-6 py-4">
+                <h2
+                  id="delete-bug-confirmation-title"
+                  className="text-lg font-semibold text-stone-800"
+                >
+                  Delete bug?
+                </h2>
+                <button
+                  type="button"
+                  ref={deleteConfirmationCancelButtonRef}
+                  onClick={cancelDeleteConfirmation}
+                  className="rounded p-1 text-stone-500 hover:bg-stone-100 hover:text-stone-700 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 disabled:opacity-50"
+                  aria-label="Close delete confirmation"
+                  disabled={deleting}
+                >
+                  <span className="sr-only">Close</span>
+                  <span aria-hidden="true">×</span>
+                </button>
+              </div>
+              <div className="space-y-4 px-6 py-4">
+                <p id="delete-bug-confirmation-description" className="text-sm text-stone-700">
+                  Are you sure you want to delete bug #{bug.id}? This action cannot be undone.
+                </p>
+                {deleteErrors.length > 0 && (
+                  <ul className="text-sm text-red-600" role="alert">
+                    {deleteErrors.map((msg, i) => (
+                      <li key={i}>{msg}</li>
+                    ))}
+                  </ul>
+                )}
+                <div className="flex justify-end gap-3 pt-2">
+                  <button
+                    type="button"
+                    onClick={cancelDeleteConfirmation}
+                    className="rounded bg-stone-200 px-4 py-2 text-sm font-medium text-stone-700 hover:bg-stone-300 focus:outline-none focus:ring-2 focus:ring-stone-400 focus:ring-offset-2 disabled:opacity-50"
+                    disabled={deleting}
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="button"
+                    onClick={handleDelete}
+                    className="rounded bg-red-700 px-4 py-2 text-sm font-medium text-white hover:bg-red-800 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                    disabled={deleting}
+                  >
+                    {deleting ? "Deleting…" : "Delete bug"}
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+    </>
   );
 }

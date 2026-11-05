@@ -117,8 +117,9 @@ Checklists are updated as each feature is completed. After each feature, the AI 
 
 - [x] Spec written in `specs/features/`
 - [x] Backend implemented (deleteBug, DELETE /api/bugs/:id)
-- [x] Frontend implemented (Delete button in Edit bug modal; removes bug, closes modal, board refreshes)
+- [x] Frontend implemented (Delete button opens confirmation; confirmation removes bug and refreshes board; cancel preserves bug)
 - [x] Linter/errors resolved
+- [x] E2E test plan and Playwright coverage
 
 ---
 
@@ -128,6 +129,15 @@ Checklists are updated as each feature is completed. After each feature, the AI 
 - [x] Backend implemented (state column OPEN/CLOSED; createBug sets OPEN; updateBug/getBug/listBugs include state; PUT accepts state)
 - [x] Frontend implemented (state filter toggle above board default Open; Edit modal State dropdown; search + sort apply with state filter; no-bugs-matched message)
 - [x] Linter/errors resolved
+
+---
+
+## Playwright test automation
+
+- [x] Existing tests under `tests/` refactored to use page object fixtures in `tests/fixtures/`
+- [x] Shared search-test data extracted to `tests/data/searchBugs.ts`
+- [x] Test suite run and refactoring failures resolved
+- [x] GitHub Actions workflow runs tests on pull requests, pushes to `main`, and manual dispatch; HTML reports and test results are uploaded as artifacts
 
 ---
 

@@ -23,11 +23,13 @@ All product and engineering context **shall** live in Markdown under `specs/`. N
 |                           | `engineering/tech-stack.md` – Stack and constraints.                                                     |
 |                           | `engineering/coding-standards.md` – Style, DDD, service layer, errors/linting.                           |
 |                           | `engineering/development-process.md` – Spec-first, feature-by-feature, review pauses, progress tracking. |
+|                           | `engineering/test-automation-patterns.md` – Project-wide Playwright testing conventions and Page Object Model. |
+|                           | `engineering/pipelines.md` – CI pipeline requirements for running Playwright tests.                    |
 | **`specs/` (root)**       |                                                                                                          |
 |                           | `constitution.md` – This file: the supreme reference for how we work.                                    |
 |                           | `PROGRESS.md` – The single checklist of what’s done per feature; updated after each feature.             |
 
-**Use in Cursor:** Reference **`@specs/`** for full context; **`@specs/features/01-login.md`** (or the relevant feature) for a given feature; **`@specs/constitution.md`** and **`@specs/engineering/development-process.md`** for how we work.
+**Use in Cursor:** Reference **`@specs/`** for full context; **`@specs/features/01-login.md`** (or the relevant feature) for a given feature; **`@specs/constitution.md`** and **`@specs/engineering/development-process.md`** for how we work. For Playwright tests, also follow **`@specs/engineering/test-automation-patterns.md`**; for CI pipeline work, follow **`@specs/engineering/pipelines.md`**.
 
 ---
 
@@ -35,7 +37,7 @@ All product and engineering context **shall** live in Markdown under `specs/`. N
 
 Cursor rules in `.cursor/rules/` (`.mdc` files with YAML frontmatter) **shall** give the AI persistent, project-specific instructions that match this constitution.
 
-**Required:** An always-apply rule that directs the AI to read and follow the specs under `specs/`—including `specs/product/vision.md`, `specs/design/theme.md`, `specs/engineering/tech-stack.md`, `specs/engineering/coding-standards.md`, and `specs/engineering/development-process.md`—and to use the relevant file in `specs/features/` for each feature. When something is unclear, the AI **shall** ask the user before implementing.
+**Required:** An always-apply rule that directs the AI to read and follow the specs under `specs/`—including `specs/product/vision.md`, `specs/design/theme.md`, `specs/engineering/tech-stack.md`, `specs/engineering/coding-standards.md`, and `specs/engineering/development-process.md`; `specs/engineering/test-automation-patterns.md` when working on Playwright tests; and `specs/engineering/pipelines.md` when creating or changing CI pipelines—and to use the relevant file in `specs/features/` for each feature. When something is unclear, the AI **shall** ask the user before implementing.
 
 **Optional:** File-specific rules (e.g. TypeScript, React, Express) may be added to lock in conventions; keep them short. If `specs/engineering/coding-standards.md` already covers a topic, the "read the specs" rule may suffice.
 
